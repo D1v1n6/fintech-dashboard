@@ -4,6 +4,7 @@ export interface Transaction {
   bank: string;
   category: string;
   date: string;
+  transactionDate: string;
   time: string;
   status: "Completed" | "Pending" | "Failed";
   amount: number;
@@ -18,6 +19,7 @@ export const transactions: Transaction[] = [
     bank: "GTBank",
     category: "Transfer",
     date: "Today",
+    transactionDate: "2026-09-07",
     time: "10:35 AM",
     status: "Completed",
     amount: 25000,
@@ -30,6 +32,7 @@ export const transactions: Transaction[] = [
     bank: "Subscription",
     category: "Bills",
     date: "Yesterday",
+    transactionDate: "2026-09-06",
     time: "8:20 PM",
     status: "Completed",
     amount: 6000,
@@ -42,6 +45,7 @@ export const transactions: Transaction[] = [
     bank: "Company Payment",
     category: "Income",
     date: "28 Jul",
+    transactionDate: "2026-07-28",
     time: "9:00 AM",
     status: "Completed",
     amount: 200000,
@@ -54,6 +58,7 @@ export const transactions: Transaction[] = [
     bank: "Electricity",
     category: "Utilities",
     date: "26 Jul",
+    transactionDate: "2026-07-26",
     time: "2:45 PM",
     status: "Pending",
     amount: 18000,

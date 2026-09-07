@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import Transactable from "../components/transactions/Transactable";
 import Balance from "../components/cards/Balance";
 import {
@@ -7,8 +7,9 @@ import {
 } from "react-icons/hi2";
 
 import { FiClock, FiCreditCard } from "react-icons/fi";
+import { transactions } from "../components/transactions/transactions";
 
-const transactions = [
+const transactionsCard = [
   {
     title: "Total Transactions",
     balance: 245,
@@ -38,13 +39,107 @@ const transactions = [
 const Transactions = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [transactionType, setTransactionType] = useState("All");
+  const [statusFilter, setStatusFilter] = useState("All");
+  const [dateFilter, setDateFilter] = useState("This Month");
+
+  const today = new Date();
+
+  const filteredTransactions = transactions.filter((transaction) => {
+    const matchesSearch =
+      transaction.recipient.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      transaction.bank.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      transaction.category.toLowerCase().includes(searchTerm.toLowerCase());
+
+    const matchesType =
+      transactionType === "All" || transaction.type === transactionType;
+
+    const matchesStatus =
+      statusFilter === "All" || transaction.status === statusFilter;
+
+    const matchesDate = (() => {
+      const transactionDate = new Date(transaction.transactionDate);
+
+      if (dateFilter === "This Month") {
+        return (
+          transactionDate.getMonth() === today.getMonth() &&
+          transactionDate.getFullYear() === today.getFullYear()
+        );
+      }
+
+      if (dateFilter === "Last 7 Days") {
+        const sevenDaysAgo = new Date();
+        sevenDaysAgo.setDate(today.getDate() - 7);
+
+        return transactionDate >= sevenDaysAgo;
+      }
+
+      if (dateFilter === "Last 30 Days") {
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(today.getDate() - 30);
+
+        return transactionDate >= thirtyDaysAgo;
+      }
+
+      return true;
+    })();
+
+    return matchesSearch && matchesType && matchesStatus && matchesDate;
+  });
+
+  const handleExport = () => {
+    const headers = [
+      "Recipient",
+      "Bank",
+      "Category",
+      "Date",
+      "Time",
+      "Status",
+      "Amount",
+      "Type",
+      "Reference",
+    ];
+
+    const rows = filteredTransactions.map((transaction) => [
+      transaction.recipient,
+      transaction.bank,
+      transaction.category,
+      transaction.transactionDate,
+      transaction.time,
+      transaction.status,
+      transaction.amount,
+      transaction.type,
+      transaction.reference,
+    ]);
+
+    const csvContent = [
+      headers.join(","),
+      ...rows.map((row) => row.join(",")),
+    ].join("\n");
+
+    const blob = new Blob([csvContent], {
+      type: "text/csv;charset=utf-8;",
+    });
+
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = "transactions.csv";
+
+    link.click();
+
+    URL.revokeObjectURL(url);
+  };
   return (
     <div className="space-y-8">
       {/* Header */}
       <div className="flex items-center justify-between">
         <h1 className="text-4xl font-semibold text-white">Transactions</h1>
 
-        <button className="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700">
+        <button
+          onClick={handleExport}
+          className="rounded-lg bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 cursor-pointer"
+        >
           Export
         </button>
       </div>
@@ -69,21 +164,29 @@ const Transactions = () => {
           <option value="expense">Expenses</option>
         </select>
 
-        <select className="rounded-lg col-span-4 bg-[#1E293B] px-4 py-3 text-white cursor-pointer">
-          <option>Status</option>
-          <option>Completed</option>
-          <option>Pending</option>
-          <option>Failed</option>
+        <select
+          value={statusFilter}
+          onChange={(e) => setStatusFilter(e.target.value)}
+          className="rounded-lg col-span-4 bg-[#1E293B] px-4 py-3 text-white cursor-pointer"
+        >
+          <option value="All">All Status</option>
+          <option value="Completed">Completed</option>
+          <option value="Pending">Pending</option>
+          <option value="Failed">Failed</option>
         </select>
 
-        <select className="rounded-lg col-span-4 bg-[#1E293B] px-4 py-3 text-white cursor-pointer">
-          <option>This Month</option>
-          <option>Last 7 Days</option>
-          <option>Last 30 Days</option>
+        <select
+          value={dateFilter}
+          onChange={(e) => setDateFilter(e.target.value)}
+          className="rounded-lg col-span-4 bg-[#1E293B] px-4 py-3 text-white cursor-pointer"
+        >
+          <option value="This Month">This Month</option>
+          <option value="Last 7 Days">Last 7 Days</option>
+          <option value="Last 30 Days">Last 30 Days</option>
         </select>
       </div>
       <div className="hidden md:grid md:grid-cols-2 gap-6 mb-5">
-        {transactions.map((t) => (
+        {transactionsCard.map((t) => (
           <Balance
             title={t.title}
             balance={t.balance}
@@ -96,7 +199,9 @@ const Transactions = () => {
 
       {/* Transactions Table goes here */}
       <div className="overflow-hidden rounded-2xl border border-slate-700 bg-slate-800 p-3">
-        <Transactable searchTerm={searchTerm} transactionType={transactionType} />
+        <Transactable
+          transactions={filteredTransactions}
+        />
       </div>
     </div>
   );

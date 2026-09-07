@@ -1,8 +1,5 @@
 import { useState } from "react";
-import { transactions, type Transaction } from "./transactions";
-import { HiArrowUpRight, HiArrowDownLeft } from "react-icons/hi2";
-
-import { MdOutlineElectricBolt } from "react-icons/md";
+import { type Transaction } from "./transactions";
 import TransactionDrawer from "./TransactionDrawer";
 
 interface TransactionItemProps extends Transaction {
@@ -80,25 +77,12 @@ const TableRow = ({
 );
 
 interface TransactableProps {
-  searchTerm: string;
-  transactionType: string;
+  transactions: Transaction[];
 }
 
-const Transactable = ({ searchTerm, transactionType }: TransactableProps) => {
+const Transactable = ({ transactions }: TransactableProps) => {
   const [selectedTransaction, setSelectedTransaction] =
     useState<Transaction | null>(null);
-
-  const filteredTransactions = transactions.filter((transaction) => {
-    const matchesSearch =
-      transaction.recipient.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      transaction.bank.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      transaction.category.toLowerCase().includes(searchTerm.toLowerCase());
-
-    const matchesType =
-      transactionType === "All" || transaction.type === transactionType;
-
-    return matchesSearch && matchesType;
-  });
 
   return (
     <>
@@ -108,8 +92,8 @@ const Transactable = ({ searchTerm, transactionType }: TransactableProps) => {
           <TableHeader />
 
           <tbody>
-            {filteredTransactions.length > 0 ? (
-              filteredTransactions.map((transaction) => (
+            {transactions.length > 0 ? (
+              transactions.map((transaction) => (
                 <TableRow
                   key={transaction.id}
                   {...transaction}
@@ -129,8 +113,8 @@ const Transactable = ({ searchTerm, transactionType }: TransactableProps) => {
 
       {/* Mobile Cards */}
       <div className="space-y-3 md:hidden">
-        {filteredTransactions.length > 0 ? (
-          filteredTransactions.map((transaction) => (
+        {transactions.length > 0 ? (
+          transactions.map((transaction) => (
             <div
               key={transaction.id}
               onClick={() => setSelectedTransaction(transaction)}
@@ -154,7 +138,9 @@ const Transactable = ({ searchTerm, transactionType }: TransactableProps) => {
 
                 <p
                   className={`text-right text-lg font-semibold ${
-                    transaction.type === "income" ? "text-green-400" : "text-red-400"
+                    transaction.type === "income"
+                      ? "text-green-400"
+                      : "text-red-400"
                   }`}
                 >
                   {transaction.type === "income"
