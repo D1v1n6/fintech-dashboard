@@ -1,4 +1,5 @@
-import React from "react";
+import { useState } from "react";
+import MobileNav from "./MobileNav";
 import { MdOutlineDarkMode } from "react-icons/md";
 import { RiNotificationLine } from "react-icons/ri";
 import { FiUser } from "react-icons/fi";
@@ -48,10 +49,13 @@ const Navbar = () => {
     title: "Dashboard",
     subtitle: "Welcome back",
   };
+
+  const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   return (
     <div className="sticky top-0 z-10 flex items-center justify-between bg-[#0F172A] px-3 py-5 md:px-6">
       {/* Mobile Menu */}
       <button
+        onClick={() => setIsMobileNavOpen(true)}
         className="block cursor-pointer rounded-xl border border-slate-700
         bg-slate-800 px-2 py-1 text-2xl text-zinc-400 transition
         hover:bg-slate-700 md:hidden"
@@ -90,6 +94,11 @@ const Navbar = () => {
           <FiUser className="text-xl text-white" />
         </button>
       </div>
+
+      <MobileNav
+        isOpen={isMobileNavOpen}
+        onClose={() => setIsMobileNavOpen(false)}
+      />
     </div>
   );
 };

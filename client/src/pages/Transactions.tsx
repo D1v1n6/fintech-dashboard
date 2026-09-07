@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Transactable from "../components/transactions/Transactable";
 import Balance from "../components/cards/Balance";
 import {
@@ -13,29 +13,31 @@ const transactions = [
     title: "Total Transactions",
     balance: 245,
     icon: <FiCreditCard />,
-    isCurrency: false
+    isCurrency: false,
   },
   {
     title: "Money In",
     balance: 1250000,
     icon: <HiOutlineArrowTrendingUp />,
-    isCurrency: true
+    isCurrency: true,
   },
   {
     title: "Money Out",
     balance: 850000,
     icon: <HiOutlineArrowTrendingDown />,
-    isCurrency: true
+    isCurrency: true,
   },
   {
     title: "Pending",
     balance: 8,
     icon: <FiClock />,
-    isCurrency: false
+    isCurrency: false,
   },
 ];
 
 const Transactions = () => {
+  const [searchTerm, setSearchTerm] = useState("");
+  const [transactionType, setTransactionType] = useState("All");
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -51,14 +53,20 @@ const Transactions = () => {
       <div className="grid grid-cols-12 md:flex md:flex-wrap gap-4">
         <input
           type="text"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
           placeholder="Search transactions..."
           className="flex-1 col-span-12 rounded-lg border border-slate-700 bg-[#1E293B] px-4 py-3 text-white placeholder:text-slate-400 outline-none focus:border-blue-500"
         />
 
-        <select className="rounded-lg col-span-4 bg-[#1E293B] px-4 py-3 text-white cursor-pointer">
-          <option>All</option>
-          <option>Income</option>
-          <option>Expenses</option>
+        <select
+          value={transactionType}
+          onChange={(e) => setTransactionType(e.target.value)}
+          className="rounded-lg col-span-4 bg-[#1E293B] px-4 py-3 text-white cursor-pointer"
+        >
+          <option value="All">All</option>
+          <option value="income">Income</option>
+          <option value="expense">Expenses</option>
         </select>
 
         <select className="rounded-lg col-span-4 bg-[#1E293B] px-4 py-3 text-white cursor-pointer">
@@ -74,15 +82,21 @@ const Transactions = () => {
           <option>Last 30 Days</option>
         </select>
       </div>
-      <div className="grid grid-cols-2 gap-6 mb-5">
+      <div className="hidden md:grid md:grid-cols-2 gap-6 mb-5">
         {transactions.map((t) => (
-          <Balance title={t.title} balance={t.balance} icon={t.icon} isCurrency={t.isCurrency} percent="" />
+          <Balance
+            title={t.title}
+            balance={t.balance}
+            icon={t.icon}
+            isCurrency={t.isCurrency}
+            percent=""
+          />
         ))}
       </div>
 
       {/* Transactions Table goes here */}
       <div className="overflow-hidden rounded-2xl border border-slate-700 bg-slate-800 p-3">
-        <Transactable />
+        <Transactable searchTerm={searchTerm} transactionType={transactionType} />
       </div>
     </div>
   );
