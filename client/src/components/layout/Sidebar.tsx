@@ -60,7 +60,7 @@ const Sidebar = () => {
           `flex items-center gap-3 rounded-xl px-4 py-3 transition-all ${
             isActive
               ? "bg-black text-white"
-              : "text-zinc-400 hover:bg-gray-800 hover:text-white"
+              : "text-slate-900 hover:bg-slate-200 hover:text-white dark:text-zinc-400 dark:hover:bg-gray-800 dark:hover:text-white"
           }`
         }
       >
@@ -71,7 +71,7 @@ const Sidebar = () => {
   };
   return (
     <div className="w-full h-full flex flex-col gap-1 p-5">
-        <span className="text-2xl font-bold text-white">Vault X</span>
+        <span className="text-2xl font-bold text-slate-900 dark:text-white">Vault X</span>
       <div className="flex-1 flex flex-col gap-y-5 py-8">
         {sidebarLinks.map((link) => (
           <NavItem el={link} key={link.label} />

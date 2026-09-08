@@ -46,10 +46,10 @@ const Dashboard = () => {
   return (
     <div>
       <div className="mb-5">
-        <h1 className="text-2xl font-semibold text-white">
+        <h1 className="text-2xl font-semibold text-slate-900 dark:text-white">
           Good morning, Divine 👋
         </h1>
-        <p className="text-zinc-400">Here's your financial overview.</p>
+        <p className="text-slate-500 dark:text-zinc-400">Here's your financial overview.</p>
       </div>
       <div className="grid grid-cols-2 gap-6 mb-5">
         {balanceInfo.map((info) => (

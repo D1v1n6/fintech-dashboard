@@ -18,17 +18,17 @@ const MobileNav = ({ isOpen, onClose }: MobileNavProps) => {
       />
 
       {/* Drawer */}
-      <aside className="fixed left-0 top-0 z-50 h-full w-72 border-r border-slate-700 bg-[#0F172A] p-6 shadow-2xl">
+      <aside className="fixed left-0 top-0 z-50 h-full w-72 border-r bg-slate-50 border-slate-700 dark:bg-[#0F172A] p-6 shadow-2xl">
         
         {/* Header */}
         <div className="mb-10 flex items-center justify-between">
-          <h2 className="text-xl font-bold text-white">
+          <h2 className="text-xl font-bold text-slate-900 dark:text-white">
             Vault X
           </h2>
 
           <button
             onClick={onClose}
-            className="rounded-lg bg-slate-800 p-2 text-slate-400 transition hover:bg-slate-700 hover:text-white"
+            className="rounded-lg border-slate-200 bg-white hover:bg-slate-100 dark:bg-slate-800 p-2 dark:text-slate-400 transition dark:hover:bg-slate-700 dark:hover:text-white"
           >
             <IoClose size={22} />
           </button>
@@ -39,7 +39,7 @@ const MobileNav = ({ isOpen, onClose }: MobileNavProps) => {
           <NavLink
             to="/"
             onClick={onClose}
-            className="block rounded-xl px-4 py-3 text-slate-400 transition hover:bg-slate-800 hover:text-white"
+            className="block rounded-xl px-4 py-3 text-slate-900 hover:bg-slate-200 hover:text-white dark:text-slate-400 transition dark:hover:bg-slate-800 dark:hover:text-white"
           >
             Dashboard
           </NavLink>
@@ -47,7 +47,7 @@ const MobileNav = ({ isOpen, onClose }: MobileNavProps) => {
           <NavLink
             to="/accounts"
             onClick={onClose}
-            className="block rounded-xl px-4 py-3 text-slate-400 transition hover:bg-slate-800 hover:text-white"
+            className="block rounded-xl px-4 py-3 text-slate-900 hover:bg-slate-200 hover:text-white dark:text-slate-400 transition dark:hover:bg-slate-800 dark:hover:text-white"
           >
            Accounts
           </NavLink>
@@ -55,7 +55,7 @@ const MobileNav = ({ isOpen, onClose }: MobileNavProps) => {
           <NavLink
             to="/transactions"
             onClick={onClose}
-            className="block rounded-xl px-4 py-3 text-slate-400 transition hover:bg-slate-800 hover:text-white"
+            className="block rounded-xl px-4 py-3 text-slate-900 hover:bg-slate-200 hover:text-white dark:text-slate-400 transition dark:hover:bg-slate-800 dark:hover:text-white"
           >
             Transactions
           </NavLink>
@@ -63,7 +63,7 @@ const MobileNav = ({ isOpen, onClose }: MobileNavProps) => {
           <NavLink
             to="/cards"
             onClick={onClose}
-            className="block rounded-xl px-4 py-3 text-slate-400 transition hover:bg-slate-800 hover:text-white"
+            className="block rounded-xl px-4 py-3 text-slate-900 hover:bg-slate-200 hover:text-white dark:text-slate-400 transition dark:hover:bg-slate-800 dark:hover:text-white"
           >
            Credit Cards
           </NavLink>
@@ -71,7 +71,7 @@ const MobileNav = ({ isOpen, onClose }: MobileNavProps) => {
           <NavLink
             to="/analytics"
             onClick={onClose}
-            className="block rounded-xl px-4 py-3 text-slate-400 transition hover:bg-slate-800 hover:text-white"
+            className="block rounded-xl px-4 py-3 text-slate-900 hover:bg-slate-200 hover:text-white dark:text-slate-400 transition dark:hover:bg-slate-800 dark:hover:text-white"
           >
             Analytics
           </NavLink>
@@ -79,7 +79,7 @@ const MobileNav = ({ isOpen, onClose }: MobileNavProps) => {
           <NavLink
             to="/settings"
             onClick={onClose}
-            className="block rounded-xl px-4 py-3 text-slate-400 transition hover:bg-slate-800 hover:text-white"
+            className="block rounded-xl px-4 py-3 text-slate-900 hover:bg-slate-200 hover:text-white dark:text-slate-400 transition dark:hover:bg-slate-800 dark:hover:text-white"
           >
             Settings
           </NavLink>

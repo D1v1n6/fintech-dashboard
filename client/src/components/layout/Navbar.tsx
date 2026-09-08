@@ -1,9 +1,10 @@
 import { useEffect, useRef, useState } from "react";
 import MobileNav from "./MobileNav";
-import { MdOutlineDarkMode } from "react-icons/md";
+import { MdOutlineDarkMode, MdOutlineLightMode } from "react-icons/md";
 import { RiNotificationLine } from "react-icons/ri";
 import { FiUser } from "react-icons/fi";
 import { useLocation } from "react-router-dom";
+import { useTheme } from "../../context/ThemeContext";
 
 const pageInfo: Record<
   string,
@@ -50,6 +51,8 @@ const Navbar = () => {
     subtitle: "Welcome back",
   };
 
+  const { darkMode, toggleTheme } = useTheme();
+
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const notificationRef = useRef<HTMLDivElement>(null);
@@ -70,23 +73,25 @@ const Navbar = () => {
     };
   }, []);
   return (
-    <div className="sticky top-0 z-10 flex items-center justify-between bg-[#0F172A] px-3 py-5 md:px-6">
+    <div className="sticky top-0 z-10 flex items-center justify-between bg-slate-100 dark:bg-[#0F172A] px-3 py-5 md:px-6">
       {/* Mobile Menu */}
       <button
         onClick={() => setIsMobileNavOpen(true)}
-        className="block cursor-pointer rounded-xl border border-slate-700
-        bg-slate-800 px-2 py-1 text-2xl text-zinc-400 transition
-        hover:bg-slate-700 md:hidden"
+        className="block cursor-pointer rounded-xl border border-slate-200 bg-white hover:bg-slate-100 dark:border-slate-700
+        dark:bg-slate-800 px-2 py-1 text-2xl dark:text-zinc-400 transition
+        dark:hover:bg-slate-700 md:hidden"
       >
         ☰
       </button>
 
       {/* Page Title */}
       <div className="hidden md:block">
-        <h2 className="text-xl font-semibold text-white">
+        <h2 className="text-xl font-semibold  text-slate-900 dark:text-white">
           {currentPage.title}
         </h2>
-        <p className="text-sm text-slate-400">{currentPage.subtitle}</p>
+        <p className="text-sm text-slate-500 dark:text-slate-400">
+          {currentPage.subtitle}
+        </p>
       </div>
 
       {/* Right Side */}
@@ -94,10 +99,9 @@ const Navbar = () => {
         <div ref={notificationRef} className="relative">
           <button
             onClick={() => setIsNotificationsOpen((prev) => !prev)}
-            className="relative rounded-full border border-slate-700
-          bg-slate-800 p-3 transition hover:bg-slate-700"
+            className="relative rounded-full border border-slate-200 bg-white p-3 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700"
           >
-            <RiNotificationLine className="text-xl text-white" />
+            <RiNotificationLine className="text-xl text-slate-700 dark:text-white" />
 
             {/* Notification indicator */}
             <span className="absolute right-2 top-2 h-2 w-2 rounded-full bg-red-500" />
@@ -195,17 +199,20 @@ const Navbar = () => {
         </div>
 
         <button
-          className=" rounded-full border border-slate-700
-          bg-slate-800 p-3 transition hover:bg-slate-700 md:block"
+          onClick={toggleTheme}
+          className="rounded-full border border-slate-200 bg-white p-3
+  transition hover:bg-slate-100
+  dark:border-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700 md:block"
         >
-          <MdOutlineDarkMode className="text-xl text-white" />
+          {darkMode ? (
+            <MdOutlineLightMode className="text-xl text-white" />
+          ) : (
+            <MdOutlineDarkMode className="text-xl text-slate-700" />
+          )}
         </button>
 
-        <button
-          className="rounded-full border border-slate-700
-          bg-slate-800 p-3 transition hover:bg-slate-700"
-        >
-          <FiUser className="text-xl text-white" />
+        <button className="rounded-full border border-slate-200 bg-white p-3 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700">
+          <FiUser className="text-xl text-slate-700 dark:text-white" />
         </button>
       </div>
 

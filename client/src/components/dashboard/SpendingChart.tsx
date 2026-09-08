@@ -1,7 +1,14 @@
 import React from "react";
 import { GrAnalytics } from "react-icons/gr";
-import { Cell, Pie, PieChart, ResponsiveContainer, Tooltip } from "recharts";
+import {
+  Cell,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
+} from "recharts";
 import clsx from "clsx";
+import { useTheme } from "../../context/ThemeContext";
 
 const spendingData = [
   {
@@ -43,18 +50,27 @@ const spendingData = [
 ];
 
 const SpendingChart = () => {
-  //const total = spendingData.reduce((sum, item) => sum + item.value, 0);
+  const { darkMode } = useTheme();
+
+  const primaryText = darkMode ? "#F8FAFC" : "#0F172A";
+  const secondaryText = darkMode ? "#94A3B8" : "#64748B";
+
   return (
-    <div className="rounded-2xl border border-slate-700 bg-slate-800 p-6">
+    <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-lg dark:border-slate-700 dark:bg-slate-800">
       <div className="mb-3 flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-semibold text-white">
+          <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
             Spending Categories
           </h2>
-          <p className="text-sm text-slate-400">This month</p>
+
+          <p className="text-sm text-slate-500 dark:text-slate-400">
+            This month
+          </p>
         </div>
-        <GrAnalytics className="text-white text-xl" />
+
+        <GrAnalytics className="text-xl text-slate-700 dark:text-white" />
       </div>
+
       <ResponsiveContainer width="100%" height={208}>
         <PieChart>
           <Pie
@@ -69,11 +85,12 @@ const SpendingChart = () => {
             {spendingData.map((entry, index) => (
               <Cell key={index} fill={entry.color} />
             ))}
+
             <text
               x="50%"
               y="45%"
               textAnchor="middle"
-              fill="#F8FAFC"
+              fill={primaryText}
               fontSize="12"
               fontWeight="bold"
             >
@@ -84,27 +101,47 @@ const SpendingChart = () => {
               x="50%"
               y="55%"
               textAnchor="middle"
-              fill="#94A3B8"
+              fill={secondaryText}
               fontSize="10"
             >
               Spending
             </text>
           </Pie>
 
-          <Tooltip />
+          <Tooltip
+            contentStyle={{
+              backgroundColor: darkMode ? "#1E293B" : "#FFFFFF",
+              borderColor: darkMode ? "#334155" : "#E2E8F0",
+              borderRadius: "12px",
+              color: primaryText,
+            }}
+          />
         </PieChart>
       </ResponsiveContainer>
-      {spendingData.map((sp) => (
-        <div key={sp.name} className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span
-              className={clsx("rounded-3xl h-[10px] w-[10px]", sp.color2)}
-            />
-            <span className="text-slate-400">{sp.name}</span>
+
+        {spendingData.map((sp) => (
+          <div
+            key={sp.name}
+            className="flex items-center justify-between"
+          >
+            <div className="flex items-center gap-2">
+              <span
+                className={clsx(
+                  "h-[10px] w-[10px] rounded-full",
+                  sp.color2
+                )}
+              />
+
+              <span className="text-slate-500 dark:text-slate-400">
+                {sp.name}
+              </span>
+            </div>
+
+            <span className="text-slate-500 dark:text-slate-400">
+              {sp.value}%
+            </span>
           </div>
-          <span className="text-slate-400">{sp.value}%</span>
-        </div>
-      ))}
+        ))}
     </div>
   );
 };

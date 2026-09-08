@@ -12,7 +12,7 @@ import Settings from './pages/Settings'
 function Layout(){
   return(
     <div className="w-full h-screen flex flex-col md:flex-row">
-      <div className="w-1/5 h-screen bg-[#030c1b] sticky top-0 hidden md:block">
+      <div className="w-1/5 h-screen bg-slate-50 dark:bg-[#030c1b] sticky top-0 hidden md:block">
         <Sidebar />
       </div>
       {/* <MobileSidebar /> */}
@@ -29,7 +29,7 @@ function Layout(){
 
 function App() {
   return (
-    <main className='w-full bg-[#0F172A]'>
+    <main className='w-full bg-slate-100 dark:bg-[#0F172A]'>
     <Routes>
       <Route element={<Layout/>}>
         <Route path='/' element={<Navigate to='/dashboard'/>}/>

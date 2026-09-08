@@ -17,7 +17,8 @@ const Balance = ({
 }: CardItemProps) => {
   return (
     <div
-      className=" bg-[#1E293B]
+      className=" dark:bg-[#1E293B]
+      border-slate-200 bg-white
             rounded-2xl
             p-5
             transition-all
@@ -26,13 +27,13 @@ const Balance = ({
             hover:shadow-xl
             hover:border-blue-500/20
             border
-            border-transparent cursor-pointer shadow-lg"
+            dark:border-transparent cursor-pointer shadow-lg"
     >
       <div className="flex justify-between items-center mb-2">
-        <p className="text-zinc-400 font-bold">{title}</p>
+        <p className="text-zinc-600 dark:text-zinc-400 font-bold">{title}</p>
         <p className="text-green-700">{icon}</p>
       </div>
-      <h1 className="text-3xl font-bold text-white">
+      <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
         {title === "Savings Rate"
           ? `${balance.toLocaleString()}%`
           : isCurrency

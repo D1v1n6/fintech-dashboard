@@ -1,7 +1,5 @@
 import React from "react";
 import {
-  AreaChart,
-  Area,
   CartesianGrid,
   ResponsiveContainer,
   Tooltip,
@@ -10,6 +8,7 @@ import {
   BarChart,
   Bar,
 } from "recharts";
+import { useTheme } from "../../context/ThemeContext";
 
 const data = [
   { month: "Jan", income: 820000, expense: 520000 },
@@ -21,52 +20,74 @@ const data = [
 ];
 
 const AnalyticsChart = () => {
+  const { darkMode } = useTheme();
+
+  const gridColor = darkMode ? "#334155" : "#E2E8F0";
+  const textColor = darkMode ? "#94A3B8" : "#64748B";
+
   return (
-    <div className="rounded-2xl border border-slate-700 bg-slate-800 p-6">
+    <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-lg dark:border-slate-700 dark:bg-slate-800">
       <div className="mb-6 flex items-center justify-between">
         <div>
-          <h2 className="text-lg font-semibold text-white">
+          <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
             Income vs Expenses
           </h2>
 
-          <p className="text-sm text-slate-400">Monthly overview</p>
+          <p className="text-sm text-slate-500 dark:text-slate-400">
+            Monthly overview
+          </p>
         </div>
 
-        <button className="rounded-2xl bg-slate-700 px-3 py-2 text-sm text-white">
+        <button className="rounded-2xl bg-slate-200 px-3 py-2 text-sm text-slate-700 dark:bg-slate-700 dark:text-white">
           Month
         </button>
       </div>
+
       <ResponsiveContainer width="100%" height={320}>
         <BarChart data={data}>
-          <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
-          <XAxis dataKey="month" stroke="#94A3B8" />
-          <YAxis stroke="#94A3B8" />
-          <Tooltip />
-          <Bar
-            type="monotone"
-            dataKey="income"
-            stroke="#3B82F6"
-            fill="#3B82F6"
-            fillOpacity={0.15}
+          <CartesianGrid strokeDasharray="3 3" stroke={gridColor} />
+
+          <XAxis dataKey="month" stroke={textColor} />
+
+          <YAxis stroke={textColor} />
+
+          <Tooltip
+            contentStyle={{
+              backgroundColor: darkMode ? "#1E293B" : "#FFFFFF",
+              borderColor: darkMode ? "#334155" : "#E2E8F0",
+              borderRadius: "12px",
+              color: darkMode ? "#FFFFFF" : "#0F172A",
+            }}
           />
+
           <Bar
-            type="monotone"
+            dataKey="income"
+            fill="#3B82F6"
+            radius={[6, 6, 0, 0]}
+          />
+
+          <Bar
             dataKey="expense"
-            stroke="#22C55E"
             fill="#22C55E"
-            fillOpacity={0.15}
+            radius={[6, 6, 0, 0]}
           />
         </BarChart>
       </ResponsiveContainer>
-      <div className="flex justify-center items-center gap-5">
-            <div className="flex items-center gap-2">
-                <span className="bg-sky-800 rounded-3xl h-[10px] w-[10px]"/>
-                <span className="text-slate-400 text-sm">Income</span>
-            </div>
-            <div className="flex items-center gap-2">
-                <span className="bg-emerald-600 rounded-3xl h-[10px] w-[10px]"/>
-                <span className="text-slate-400 text-sm">Expenses</span>
-            </div>
+
+      <div className="flex items-center justify-center gap-5">
+        <div className="flex items-center gap-2">
+          <span className="h-[10px] w-[10px] rounded-full bg-blue-500" />
+          <span className="text-sm text-slate-500 dark:text-slate-400">
+            Income
+          </span>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <span className="h-[10px] w-[10px] rounded-full bg-green-500" />
+          <span className="text-sm text-slate-500 dark:text-slate-400">
+            Expenses
+          </span>
+        </div>
       </div>
     </div>
   );
