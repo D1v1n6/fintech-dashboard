@@ -18,7 +18,7 @@ const MobileNav = ({ isOpen, onClose }: MobileNavProps) => {
       />
 
       {/* Drawer */}
-      <aside className="fixed left-0 top-0 z-50 h-full w-72 border-r bg-slate-50 border-slate-700 dark:bg-[#0F172A] p-6 shadow-2xl">
+      <aside className="fixed left-0 top-0 z-50 h-full w-72 border-r bg-slate-50 border-slate-50 dark:border-slate-700 dark:bg-[#0F172A] p-6 shadow-2xl">
         
         {/* Header */}
         <div className="mb-10 flex items-center justify-between">

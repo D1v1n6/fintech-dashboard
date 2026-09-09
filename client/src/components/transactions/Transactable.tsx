@@ -7,8 +7,8 @@ interface TransactionItemProps extends Transaction {
 }
 
 const TableHeader = () => (
-  <thead className="border-b border-slate-700">
-    <tr className="text-left text-sm text-slate-400">
+  <thead className="border-b border-slate-200 dark:border-slate-700">
+    <tr className="text-left text-sm text-slate-500 dark:text-slate-400">
       <th className="py-4">Recipient</th>
       <th className="py-4">Category</th>
       <th className="py-4">Date</th>
@@ -30,25 +30,27 @@ const TableRow = ({
 }: TransactionItemProps) => (
   <tr
     onClick={onClick}
-    className="border-b border-slate-700 hover:bg-slate-800 hover:shadow-lg transition cursor-pointer"
+    className="cursor-pointer border-b border-slate-200 transition hover:bg-slate-100 hover:shadow-lg dark:border-slate-700 dark:hover:bg-slate-800"
   >
     <td className="py-4">
       <div className="flex items-center gap-2">
-        <div className="flex md:h-10 md:w-10 h-5 w-5 items-center justify-center rounded-full bg-slate-700">
+        <div className="flex h-5 w-5 items-center justify-center rounded-full bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-white md:h-10 md:w-10">
           {recipient.charAt(0)}
         </div>
 
         <div>
-          <p className="text-xs font-medium text-white">{recipient}</p>
+          <p className="text-xs font-medium text-slate-900 dark:text-white">
+            {recipient}
+          </p>
 
-          <p className="text-xs text-slate-400">{bank}</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">{bank}</p>
         </div>
       </div>
     </td>
 
-    <td className="text-slate-400">{category}</td>
+    <td className="text-slate-500 dark:text-slate-400">{category}</td>
 
-    <td className="text-slate-400">{date}</td>
+    <td className="text-slate-500 dark:text-slate-400">{date}</td>
 
     <td>
       <span
@@ -118,21 +120,21 @@ const Transactable = ({ transactions }: TransactableProps) => {
             <div
               key={transaction.id}
               onClick={() => setSelectedTransaction(transaction)}
-              className="cursor-pointer rounded-xl border border-slate-700 bg-slate-800 p-4 transition hover:bg-slate-700"
+              className="cursor-pointer rounded-xl border border-slate-200 bg-slate-50 p-4 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700"
             >
               {/* Top */}
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-700 font-medium text-white">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-200 font-medium text-slate-700 dark:bg-slate-700 dark:text-white">
                     {transaction.recipient.charAt(0)}
                   </div>
 
                   <div>
-                    <p className="font-medium text-white">
+                    <p className="font-medium text-slate-900 dark:text-white">
                       {transaction.recipient}
                     </p>
 
-                    <p className="text-xs text-slate-400">{transaction.bank}</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">{transaction.bank}</p>
                   </div>
                 </div>
 
@@ -150,13 +152,13 @@ const Transactable = ({ transactions }: TransactableProps) => {
               </div>
 
               {/* Bottom */}
-              <div className="mt-4 flex items-center justify-between border-t border-slate-700 pt-3">
+              <div className="mt-4 flex items-center justify-between border-t border-slate-200 dark:border-slate-700 pt-3">
                 <div>
-                  <p className="text-sm text-slate-300">
+                  <p className="text-sm text-slate-700 dark:text-slate-300">
                     {transaction.category}
                   </p>
 
-                  <p className="text-xs text-slate-500">
+                  <p className="text-xs text-slate-500 dark:text-slate-400">
                     {transaction.date} • {transaction.time}
                   </p>
                 </div>

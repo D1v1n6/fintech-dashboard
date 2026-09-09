@@ -5,6 +5,7 @@ import { RiNotificationLine } from "react-icons/ri";
 import { FiUser } from "react-icons/fi";
 import { useLocation } from "react-router-dom";
 import { useTheme } from "../../context/ThemeContext";
+import { notifications } from "../../types/notification";
 
 const pageInfo: Record<
   string,
@@ -40,6 +41,21 @@ const pageInfo: Record<
   "/accounts": {
     title: "Account",
     subtitle: "View and update your personal information",
+  },
+};
+
+const notificationIcons = {
+  payment: {
+    icon: "💰",
+    bg: "bg-green-500/20",
+  },
+  pending: {
+    icon: "⚡",
+    bg: "bg-yellow-500/20",
+  },
+  security: {
+    icon: "🔒",
+    bg: "bg-blue-500/20",
   },
 };
 
@@ -108,89 +124,62 @@ const Navbar = () => {
           </button>
           {isNotificationsOpen && (
             <div
-              className="absolute right-0 top-14 z-50 w-80 rounded-2xl
-    border border-slate-700 bg-[#1E293B] shadow-2xl"
+              className="absolute right-0 top-14 z-50 w-80 overflow-hidden rounded-2xl
+border border-slate-200 bg-white shadow-2xl dark:border-slate-700 dark:bg-[#1E293B]"
             >
               {/* Header */}
-              <div className="flex items-center justify-between border-b border-slate-700 p-4">
-                <h3 className="font-semibold text-white">Notifications</h3>
+              <div className="flex items-center justify-between border-b border-slate-200 p-4 dark:border-slate-700">
+                <h3 className="font-semibold text-slate-900 dark:text-white">
+                  Notifications
+                </h3>
 
-                <span className="text-xs text-blue-400">3 New</span>
+                <span className="text-xs text-blue-500 dark:text-blue-400">
+                  {notifications.length} New
+                </span>
               </div>
 
               {/* Notification Items */}
-              <div className="divide-y divide-slate-700">
-                <div className="cursor-pointer p-4 transition hover:bg-slate-700/50">
-                  <div className="flex gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-green-500/20">
-                      💰
+              <div className="divide-y divide-slate-200 dark:divide-slate-700">
+                {notifications.map((notification) => {
+                  const notificationStyle =
+                    notificationIcons[notification.type];
+
+                  return (
+                    <div
+                      key={notification.id}
+                      className="cursor-pointer p-4 transition hover:bg-slate-100 dark:hover:bg-slate-700/50"
+                    >
+                      <div className="flex gap-3">
+                        <div
+                          className={`flex h-10 w-10 items-center justify-center rounded-full ${notificationStyle.bg}`}
+                        >
+                          {notificationStyle.icon}
+                        </div>
+
+                        <div>
+                          <p className="text-sm font-medium text-slate-900 dark:text-white">
+                            {notification.title}
+                          </p>
+
+                          <p className="text-xs text-slate-500 dark:text-slate-400">
+                            {notification.message}
+                          </p>
+
+                          <span className="mt-1 block text-xs text-slate-500">
+                            {notification.time}
+                          </span>
+                        </div>
+                      </div>
                     </div>
-
-                    <div>
-                      <p className="text-sm font-medium text-white">
-                        Payment Received
-                      </p>
-
-                      <p className="text-xs text-slate-400">
-                        ₦200,000 was credited to your account.
-                      </p>
-
-                      <span className="mt-1 block text-xs text-slate-500">
-                        2 hours ago
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="cursor-pointer p-4 transition hover:bg-slate-700/50">
-                  <div className="flex gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-yellow-500/20">
-                      ⚡
-                    </div>
-
-                    <div>
-                      <p className="text-sm font-medium text-white">
-                        Transaction Pending
-                      </p>
-
-                      <p className="text-xs text-slate-400">
-                        Your PHED payment is currently processing.
-                      </p>
-
-                      <span className="mt-1 block text-xs text-slate-500">
-                        Yesterday
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="cursor-pointer p-4 transition hover:bg-slate-700/50">
-                  <div className="flex gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-500/20">
-                      🔒
-                    </div>
-
-                    <div>
-                      <p className="text-sm font-medium text-white">
-                        Security Update
-                      </p>
-
-                      <p className="text-xs text-slate-400">
-                        Your account security settings were updated.
-                      </p>
-
-                      <span className="mt-1 block text-xs text-slate-500">
-                        2 days ago
-                      </span>
-                    </div>
-                  </div>
-                </div>
+                  );
+                })}
               </div>
 
               {/* Footer */}
               <button
-                className="w-full border-t border-slate-700 p-3 text-center
-      text-sm text-blue-400 transition hover:bg-slate-700/50"
+                className="w-full border-t border-slate-200 p-3 text-center
+                text-sm text-blue-500 transition hover:bg-slate-100
+              dark:border-slate-700 dark:text-blue-400 dark:hover:bg-slate-700/50 cursor-pointer"
               >
                 View all notifications
               </button>

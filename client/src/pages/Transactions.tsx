@@ -134,7 +134,9 @@ const Transactions = () => {
     <div className="space-y-8">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h1 className="text-4xl font-semibold text-white">Transactions</h1>
+        <h1 className="text-4xl font-semibold text-slate-900 dark:text-white">
+          Transactions
+        </h1>
 
         <button
           onClick={handleExport}
@@ -151,13 +153,13 @@ const Transactions = () => {
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           placeholder="Search transactions..."
-          className="flex-1 col-span-12 rounded-lg border border-slate-700 bg-[#1E293B] px-4 py-3 text-white placeholder:text-slate-400 outline-none focus:border-blue-500"
+          className="flex-1 col-span-12 rounded-lg border border-slate-200 text-slate-900 bg-white dark:border-slate-700 dark:bg-[#1E293B] px-4 py-3 dark:text-white placeholder:text-slate-400 outline-none focus:border-blue-500 shadow-lg"
         />
 
         <select
           value={transactionType}
           onChange={(e) => setTransactionType(e.target.value)}
-          className="rounded-lg col-span-4 bg-[#1E293B] px-4 py-3 text-white cursor-pointer"
+          className="col-span-4 cursor-pointer rounded-lg border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none dark:border-slate-700 dark:bg-[#1E293B] dark:text-white shadow-lg"
         >
           <option value="All">All</option>
           <option value="income">Income</option>
@@ -167,7 +169,7 @@ const Transactions = () => {
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="rounded-lg col-span-4 bg-[#1E293B] px-4 py-3 text-white cursor-pointer"
+          className="col-span-4 cursor-pointer rounded-lg border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none dark:border-slate-700 dark:bg-[#1E293B] dark:text-white shadow-lg"
         >
           <option value="All">All Status</option>
           <option value="Completed">Completed</option>
@@ -178,7 +180,7 @@ const Transactions = () => {
         <select
           value={dateFilter}
           onChange={(e) => setDateFilter(e.target.value)}
-          className="rounded-lg col-span-4 bg-[#1E293B] px-4 py-3 text-white cursor-pointer"
+          className="col-span-4 cursor-pointer rounded-lg border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none dark:border-slate-700 dark:bg-[#1E293B] dark:text-white shadow-lg"
         >
           <option value="This Month">This Month</option>
           <option value="Last 7 Days">Last 7 Days</option>
@@ -188,6 +190,7 @@ const Transactions = () => {
       <div className="hidden md:grid md:grid-cols-2 gap-6 mb-5">
         {transactionsCard.map((t) => (
           <Balance
+            key={t.title}
             title={t.title}
             balance={t.balance}
             icon={t.icon}
@@ -198,10 +201,8 @@ const Transactions = () => {
       </div>
 
       {/* Transactions Table goes here */}
-      <div className="overflow-hidden rounded-2xl border border-slate-700 bg-slate-800 p-3">
-        <Transactable
-          transactions={filteredTransactions}
-        />
+      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white p-3 shadow-lg dark:border-slate-700 dark:bg-slate-800">
+        <Transactable transactions={filteredTransactions} />
       </div>
     </div>
   );

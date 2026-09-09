@@ -21,24 +21,26 @@ const TransactionDrawer = ({
       />
 
       {/* Drawer */}
-      <div className="fixed right-0 top-0 z-50 h-full w-full max-w-md overflow-y-auto border-l border-slate-700 bg-[#0F172A] p-6 shadow-2xl">
+      <div className="fixed right-0 top-0 z-50 h-full w-full max-w-md overflow-y-auto border-l border-slate-200 bg-white p-6 shadow-2xl dark:border-slate-700 dark:bg-[#0F172A]">
         {/* Header */}
         <div className="mb-8 flex items-center justify-between">
-          <h2 className="text-xl font-semibold text-white">
+          <h2 className="text-xl font-semibold text-slate-900 dark:text-white">
             Transaction Details
           </h2>
 
           <button
             onClick={onClose}
-            className="rounded-lg bg-slate-800 p-2 text-slate-400 transition hover:bg-slate-700 hover:text-white"
+            className="rounded-lg p-2 text-slate-500 transition hover:bg-slate-200 hover:text-slate-900 dark:bg-slate-800 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-white"
           >
             <IoClose size={22} />
           </button>
         </div>
 
         {/* Amount */}
-        <div className="mb-8 rounded-2xl border border-slate-700 bg-slate-800 p-6 text-center">
-          <p className="mb-2 text-sm text-slate-400">Transaction Amount</p>
+        <div className="mb-8 rounded-2xl border border-slate-200 bg-slate-50 p-6 text-center dark:border-slate-700 dark:bg-slate-800">
+          <p className="mb-2 text-sm text-slate-500 dark:text-slate-400">
+            Transaction Amount
+          </p>
 
           <h3
             className={`text-right text-lg font-semibold ${
@@ -66,8 +68,10 @@ const TransactionDrawer = ({
 
           <DetailItem label="Reference" value={transaction.reference} />
 
-          <div className="border-t border-slate-700 pt-6">
-            <p className="mb-2 text-sm text-slate-400">Status</p>
+          <div className="border-t border-slate-200 pt-6 dark:border-slate-700">
+            <p className="mb-2 text-sm text-slate-500 dark:text-slate-400">
+              Status
+            </p>
 
             <span
               className={`rounded-full px-3 py-1 text-sm ${
@@ -98,9 +102,10 @@ interface DetailItemProps {
 }
 
 const DetailItem = ({ label, value }: DetailItemProps) => (
-  <div className="border-b border-slate-800 pb-4">
-    <p className="mb-1 text-sm text-slate-400">{label}</p>
-    <p className="font-medium text-white">{value}</p>
+  <div className="border-b border-slate-200 pb-4 dark:border-slate-800">
+    <p className="mb-1 text-sm text-slate-500 dark:text-slate-400">{label}</p>
+
+    <p className="font-medium text-slate-900 dark:text-white">{value}</p>
   </div>
 );
 
