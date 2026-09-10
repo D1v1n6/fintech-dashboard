@@ -124,7 +124,7 @@ const Navbar = () => {
           </button>
           {isNotificationsOpen && (
             <div
-              className="absolute right-0 top-14 z-50 w-80 overflow-hidden rounded-2xl
+              className="absolute md:right-0 -right-full top-14 z-50 w-80 overflow-hidden rounded-2xl
 border border-slate-200 bg-white shadow-2xl dark:border-slate-700 dark:bg-[#1E293B]"
             >
               {/* Header */}

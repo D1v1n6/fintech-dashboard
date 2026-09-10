@@ -33,7 +33,7 @@ const Balance = ({
         <p className="text-zinc-600 dark:text-zinc-400 font-bold">{title}</p>
         <p className="text-green-700">{icon}</p>
       </div>
-      <h1 className="text-3xl font-bold text-slate-900 dark:text-white">
+      <h1 className="md:text-3xl text-lg font-bold text-slate-900 dark:text-white">
         {title === "Savings Rate"
           ? `${balance.toLocaleString()}%`
           : isCurrency

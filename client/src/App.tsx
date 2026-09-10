@@ -8,6 +8,7 @@ import Accounts from './pages/Accounts'
 import Cards from './pages/Cards'
 import Analytics from './pages/Analytics'
 import Settings from './pages/Settings'
+import Payments from './pages/Payments'
 
 function Layout(){
   return(
@@ -36,6 +37,7 @@ function App() {
         <Route path='/dashboard' element={<Dashboard/>}/>
         <Route path='/accounts' element={<Accounts/>}/>
         <Route path='/transactions' element={<Transactions/>}/>
+        <Route path="/payments" element={<Payments />} />
         <Route path='/cards' element={<Cards/>}/>
         <Route path='/analytics' element={<Analytics/>}/>
         <Route path='/settings' element={<Settings/>}/>

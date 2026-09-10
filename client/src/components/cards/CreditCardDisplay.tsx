@@ -17,12 +17,6 @@ const CardDisplay = ({ card, onClick }: CardDisplayProps) => {
 
   const [showCardNumber, setShowCardNumber] = useState(false);
 
-  const getMaskedCardNumber = (cardNumber: string) => {
-    const lastFour = cardNumber.slice(-4);
-
-    return `•••• •••• •••• ${lastFour}`;
-  };
-
   return (
     <div
       onClick={onClick}

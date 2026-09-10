@@ -61,6 +61,14 @@ const MobileNav = ({ isOpen, onClose }: MobileNavProps) => {
           </NavLink>
 
           <NavLink
+            to="/payments"
+            onClick={onClose}
+            className="block rounded-xl px-4 py-3 text-slate-900 hover:bg-slate-200 hover:text-white dark:text-slate-400 transition dark:hover:bg-slate-800 dark:hover:text-white"
+          >
+            Payments
+          </NavLink>
+
+          <NavLink
             to="/cards"
             onClick={onClose}
             className="block rounded-xl px-4 py-3 text-slate-900 hover:bg-slate-200 hover:text-white dark:text-slate-400 transition dark:hover:bg-slate-800 dark:hover:text-white"

@@ -2,7 +2,7 @@ import React from "react";
 import { BsCreditCard2Back } from "react-icons/bs";
 import { GrAnalytics, GrTransaction } from "react-icons/gr";
 import { IoSettingsOutline } from "react-icons/io5";
-import { LuWallet } from "react-icons/lu";
+import { LuSend, LuWallet } from "react-icons/lu";
 import { TbLayoutDashboard } from "react-icons/tb";
 import { NavLink } from "react-router-dom";
 
@@ -31,6 +31,11 @@ const linkData: SidebarLink[] = [
     label: "Transactions",
     link: "transactions",
     icon: <GrTransaction />
+  },
+  {
+    label: "Payments",
+    link: "payments",
+    icon: <LuSend />,
   },
   {
     label: "Credit Cards",
