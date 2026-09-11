@@ -7,6 +7,18 @@ export const account = {
   savingsRate: 82,
 };
 
+export const accounts = [
+  {
+    id: 1,
+    name: "Vault X Main Account",
+    accountNumber: "0123456789",
+    bank: "GTBank",
+    type: "Savings",
+    balance: 12580000,
+    status: "Active",
+  },
+];
+
 export const destinationAccounts = [
   {
     id: 1,
