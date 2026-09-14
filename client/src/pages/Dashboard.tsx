@@ -1,4 +1,3 @@
-import React from "react";
 import Balance from "../components/cards/Balance";
 import { LuShieldCheck, LuWallet } from "react-icons/lu";
 import { FiArrowDownLeft, FiArrowUpRight } from "react-icons/fi";

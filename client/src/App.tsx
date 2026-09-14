@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { Navigate, Outlet, Route, Routes } from 'react-router-dom'
 import Sidebar from './components/layout/Sidebar'
 import Dashboard from './pages/Dashboard'

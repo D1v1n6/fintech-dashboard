@@ -1,4 +1,3 @@
-import React from "react";
 import { BsWifi } from "react-icons/bs";
 
 const cardInfo = {

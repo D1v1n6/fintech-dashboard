@@ -1,5 +1,4 @@
 import clsx from "clsx";
-import React from "react";
 import { LuWallet } from "react-icons/lu";
 
 const finances = [

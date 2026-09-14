@@ -17,6 +17,7 @@ import {
   incomeVsExpenses,
   spendingByCategory,
 } from "../types/analytics";
+import SpendingTrend from "../components/cards/SpendingTrend";
 
 const Analytics = () => {
   const { income, expenses, savings } = analyticsOverview;
@@ -202,6 +203,8 @@ const Analytics = () => {
           </div>
         </div>
       </div>
+
+      <SpendingTrend/>
     </div>
   );
 };
