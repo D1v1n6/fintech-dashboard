@@ -50,7 +50,7 @@ const Dashboard = () => {
         </h1>
         <p className="text-slate-500 dark:text-zinc-400">Here's your financial overview.</p>
       </div>
-      <div className="grid grid-cols-2 gap-6 mb-5">
+      <div className="grid-cols-1 grid md:grid-cols-2 gap-6 mb-5">
         {balanceInfo.map((info) => (
           <Balance
             key={info.title}

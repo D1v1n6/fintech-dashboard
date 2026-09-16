@@ -172,7 +172,7 @@ const Analytics = () => {
           </div>
 
           <div className="h-72">
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height="90%">
               <PieChart>
                 <Pie
                   data={spendingByCategory}
