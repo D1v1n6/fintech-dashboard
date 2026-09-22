@@ -8,6 +8,8 @@ import Cards from './pages/Cards'
 import Analytics from './pages/Analytics'
 import Settings from './pages/Settings'
 import Payments from './pages/Payments'
+import Register from './pages/Register'
+import Login from './pages/Login'
 
 function Layout(){
   return(
@@ -31,6 +33,8 @@ function App() {
   return (
     <main className='w-full bg-slate-100 dark:bg-[#0F172A]'>
     <Routes>
+      <Route path='/register' element={<Register />} />
+      <Route path='/login' element={<Login />} />
       <Route element={<Layout/>}>
         <Route path='/' element={<Navigate to='/dashboard'/>}/>
         <Route path='/dashboard' element={<Dashboard/>}/>
