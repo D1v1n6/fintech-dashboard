@@ -1,23 +1,35 @@
 import { useState } from "react";
 import type { FormEvent } from "react";
-import { Link } from "react-router-dom";
-import {
-  LuArrowRight,
-  LuLock,
-  LuMail,
-} from "react-icons/lu";
+import { Link, useNavigate } from "react-router-dom";
+import { LuArrowRight, LuLock, LuMail } from "react-icons/lu";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
-    console.log({
-      email,
-      password,
-    });
+    try {
+      const response = await fetch("http://localhost:5000/api/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
+
+      const data = await response.json();
+
+      localStorage.setItem("token", data.token);
+      navigate("/");
+    } catch (error) {
+      console.error("Login error:", error);
+    }
   };
 
   return (

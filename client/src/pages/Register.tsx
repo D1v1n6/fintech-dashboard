@@ -10,22 +10,42 @@ const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const [registerError, setRegisterError] = useState("");
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     setRegisterError("");
 
-    if (password !== confirmPassword) {
+    if (confirmPassword !== password) {
       setRegisterError("Passwords do not match.");
       return;
     }
 
-    console.log({
-      name,
-      email,
-      password,
-      confirmPassword,
-    });
+    try {
+      const response = await fetch("http://localhost:5000/api/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name,
+          email,
+          password,
+          confirmPassword,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setRegisterError(data.message || "Registration failed.");
+        return;
+      }
+
+      console.log("Registration successful:", data);
+    } catch (error) {
+      console.error("Registration error:", error);
+      setRegisterError("Something went wrong. Please try again.");
+    }
   };
 
   return (
