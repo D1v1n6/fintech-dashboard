@@ -98,13 +98,9 @@ export const login = async (req: Request, res: Response) => {
       });
     }
 
-    const token = jwt.sign(
-      { userId: user._id },
-      process.env.JWT_SECRET!,
-      {
-        expiresIn: "7d",
-      },
-    );
+    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET!, {
+      expiresIn: "7d",
+    });
 
     return res.status(200).json({
       success: true,
@@ -122,6 +118,34 @@ export const login = async (req: Request, res: Response) => {
     return res.status(500).json({
       success: false,
       message: "Something went wrong while logging in.",
+    });
+  }
+};
+
+export const getCurrentUser = async (req: Request, res: Response) => {
+  try {
+    const user = await User.findById(req.userId).select("-password");
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found.",
+      });
+    }
+
+    return res.status(200).json({
+      success: true,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+      },
+    });
+  } catch (error) {
+    console.error("Error fetching current user:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Something went wrong while fetching the user.",
     });
   }
 };

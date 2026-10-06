@@ -42,7 +42,7 @@ const actions = [
 
 const QuickActions = () => {
   return (
-    <div className="h-full rounded-2xl border border-slate-200 bg-white p-6 shadow-lg dark:border-slate-700 dark:bg-slate-800">
+    <div className="h-full rounded-2xl border border-slate-200 bg-white md:p-6 p-3 shadow-lg dark:border-slate-700 dark:bg-slate-800">
       <div className="mb-6">
         <h2 className="text-lg font-semibold text-slate-900 dark:text-white">
           Quick Actions
@@ -57,9 +57,9 @@ const QuickActions = () => {
         {actions.map((action) => (
           <div
             key={action.id}
-            className="mb-6 flex cursor-pointer flex-col items-center justify-center rounded-2xl border border-slate-200 bg-slate-50 p-5 transition-all duration-300 hover:-translate-y-1 hover:border-blue-500 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:hover:bg-slate-700"
+            className="mb-6 flex cursor-pointer flex-col items-center md:justify-center rounded-2xl border border-slate-200 bg-slate-50 md:p-5 py-4 px-11 transition-all duration-300 hover:-translate-y-1 hover:border-blue-500 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-900 dark:hover:bg-slate-700"
           >
-            <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-blue-500/10 text-xl text-blue-500 dark:text-blue-400">
+            <div className="mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-blue-500/10 text-lg md:text-xl text-blue-500 dark:text-blue-400">
               {action.icon}
             </div>
 

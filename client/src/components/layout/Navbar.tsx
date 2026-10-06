@@ -3,7 +3,7 @@ import MobileNav from "./MobileNav";
 import { MdOutlineDarkMode, MdOutlineLightMode } from "react-icons/md";
 import { RiNotificationLine } from "react-icons/ri";
 import { FiUser } from "react-icons/fi";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useTheme } from "../../context/ThemeContext";
 import { notifications } from "../../types/notification";
 
@@ -62,6 +62,17 @@ const notificationIcons = {
 const Navbar = () => {
   const location = useLocation();
 
+  const navigate = useNavigate();
+
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
+
+  const profileRef = useRef<HTMLDivElement>(null);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    navigate("/login");
+  };
+
   const currentPage = pageInfo[location.pathname] || {
     title: "Dashboard",
     subtitle: "Welcome back",
@@ -71,23 +82,57 @@ const Navbar = () => {
 
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
+  const [userData, setUserData] = useState<{ name: string; email: string } | null>(null);
   const notificationRef = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (
-        notificationRef.current &&
-        !notificationRef.current.contains(event.target as Node)
-      ) {
-        setIsNotificationsOpen(false);
-      }
-    };
+ useEffect(() => {
+  const handleClickOutside = (event: MouseEvent) => {
+    const target = event.target as Node;
 
-    document.addEventListener("mousedown", handleClickOutside);
+    if (
+      notificationRef.current &&
+      !notificationRef.current.contains(target)
+    ) {
+      setIsNotificationsOpen(false);
+    }
 
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
+    if (
+      profileRef.current &&
+      !profileRef.current.contains(target)
+    ) {
+      setIsProfileOpen(false);
+    }
+  };
+
+  document.addEventListener("mousedown", handleClickOutside);
+
+  return () => {
+    document.removeEventListener("mousedown", handleClickOutside);
+  };
+}, []);
+
+useEffect(() => {
+  const getUserData = async () => {
+    try {
+      const response = await fetch(
+        "http://localhost:5000/api/auth/me",
+        {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      const data = await response.json();
+      console.log("Fetched user data:", data);
+      setUserData(data.user);
+    } catch (error) {
+      console.error("Error fetching current user:", error);
+    }
+  };
+
+  getUserData();
+}, []);
   return (
     <div className="sticky top-0 z-10 flex items-center justify-between bg-slate-100 dark:bg-[#0F172A] px-3 py-5 md:px-6">
       {/* Mobile Menu */}
@@ -200,9 +245,34 @@ border border-slate-200 bg-white shadow-2xl dark:border-slate-700 dark:bg-[#1E29
           )}
         </button>
 
-        <button className="rounded-full border border-slate-200 bg-white p-3 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700">
-          <FiUser className="text-xl text-slate-700 dark:text-white" />
-        </button>
+        <div ref={profileRef} className="relative">
+          <button
+            onClick={() => setIsProfileOpen((prev) => !prev)}
+            className="rounded-full border border-slate-200 bg-white p-3 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700"
+          >
+            <FiUser className="text-xl text-slate-700 dark:text-white" />
+          </button>
+
+          {isProfileOpen && (
+            <div className="absolute right-0 top-14 z-50 w-64 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-800">
+                <div className="p-4">
+                  <p className="text-lg font-bold text-slate-900 dark:text-white">
+                    {userData?.name}
+                  </p>
+                  <p className="text-sm text-slate-500 dark:text-slate-400">
+                    {userData?.email}
+                  </p>
+                </div>
+              <hr className="border-slate-200 dark:border-slate-700" />
+              <button
+                onClick={handleLogout}
+                className="w-full px-4 py-3 text-left text-sm text-slate-700 transition hover:bg-slate-100 dark:text-white dark:hover:bg-slate-700"
+              >
+                Logout
+              </button>
+            </div>
+          )}
+        </div>
       </div>
 
       <MobileNav

@@ -1,18 +1,28 @@
-import { Navigate, Outlet, Route, Routes } from 'react-router-dom'
-import Sidebar from './components/layout/Sidebar'
-import Dashboard from './pages/Dashboard'
-import Navbar from './components/layout/Navbar'
-import Transactions from './pages/Transactions'
-import Accounts from './pages/Accounts'
-import Cards from './pages/Cards'
-import Analytics from './pages/Analytics'
-import Settings from './pages/Settings'
-import Payments from './pages/Payments'
-import Register from './pages/Register'
-import Login from './pages/Login'
+import { Navigate, Outlet, Route, Routes } from "react-router-dom";
+import Sidebar from "./components/layout/Sidebar";
+import Dashboard from "./pages/Dashboard";
+import Navbar from "./components/layout/Navbar";
+import Transactions from "./pages/Transactions";
+import Accounts from "./pages/Accounts";
+import Cards from "./pages/Cards";
+import Analytics from "./pages/Analytics";
+import Settings from "./pages/Settings";
+import Payments from "./pages/Payments";
+import Register from "./pages/Register";
+import Login from "./pages/Login";
 
-function Layout(){
-  return(
+function ProtectedRoute() {
+  const token = localStorage.getItem("token");
+
+  if (!token) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return <Outlet />;
+}
+
+function Layout() {
+  return (
     <div className="w-full h-screen flex flex-col md:flex-row">
       <div className="w-1/5 h-screen bg-slate-50 dark:bg-[#030c1b] sticky top-0 hidden md:block">
         <Sidebar />
@@ -26,28 +36,31 @@ function Layout(){
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 function App() {
   return (
-    <main className='w-full bg-slate-100 dark:bg-[#0F172A]'>
-    <Routes>
-      <Route path='/register' element={<Register />} />
-      <Route path='/login' element={<Login />} />
-      <Route element={<Layout/>}>
-        <Route path='/' element={<Navigate to='/dashboard'/>}/>
-        <Route path='/dashboard' element={<Dashboard/>}/>
-        <Route path='/accounts' element={<Accounts/>}/>
-        <Route path='/transactions' element={<Transactions/>}/>
-        <Route path="/payments" element={<Payments />} />
-        <Route path='/cards' element={<Cards/>}/>
-        <Route path='/analytics' element={<Analytics/>}/>
-        <Route path='/settings' element={<Settings/>}/>
-      </Route>
-    </Routes>
+    <main className="w-full bg-slate-100 dark:bg-[#0F172A]">
+      <Routes>
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+
+        <Route element={<ProtectedRoute />}>
+          <Route element={<Layout />}>
+            <Route path="/" element={<Navigate to="/dashboard" />} />
+            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/accounts" element={<Accounts />} />
+            <Route path="/transactions" element={<Transactions />} />
+            <Route path="/payments" element={<Payments />} />
+            <Route path="/cards" element={<Cards />} />
+            <Route path="/analytics" element={<Analytics />} />
+            <Route path="/settings" element={<Settings />} />
+          </Route>
+        </Route>
+      </Routes>
     </main>
-  )
+  );
 }
 
-export default App
+export default App;
