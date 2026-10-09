@@ -1,11 +1,10 @@
 import cors from "cors";
 import express from "express";
 import authRoutes from "./routes/authRoutes.js";
+import accountRoutes from "./routes/accountRoutes.js";
 import "dotenv/config";
 
 const app = express();
-
-
 
 app.use(
   cors({
@@ -16,6 +15,8 @@ app.use(
 app.use(express.json());
 
 app.use("/api/auth", authRoutes);
+
+app.use("/api/accounts", accountRoutes);
 
 app.get("/api/health", (_req, res) => {
   res.json({

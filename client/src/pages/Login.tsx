@@ -6,22 +6,35 @@ import { LuArrowRight, LuLock, LuMail } from "react-icons/lu";
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    setError("");
+    setIsLoading(true);
 
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/auth/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/auth/login`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            email,
+            password,
+          }),
         },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
-      });
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        setError(errorData.message || "Login failed.");
+        return;
+      }
 
       const data = await response.json();
 
@@ -29,6 +42,9 @@ const Login = () => {
       navigate("/");
     } catch (error) {
       console.error("Login error:", error);
+      setError("Unable to connect to the server. Please try again.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -117,13 +133,22 @@ const Login = () => {
                 </div>
               </div>
 
+              {error && <p className="text-sm text-red-500">{error}</p>}
+
               {/* Submit */}
               <button
                 type="submit"
-                className="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-blue-700"
+                disabled={isLoading}
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
               >
-                Sign in
-                <LuArrowRight size={17} />
+                {isLoading ? (
+                  "Logging in..."
+                ) : (
+                  <>
+                    Sign in
+                    <LuArrowRight size={17} />
+                  </>
+                )}
               </button>
             </form>
 
