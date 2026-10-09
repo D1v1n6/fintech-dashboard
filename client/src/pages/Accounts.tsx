@@ -1,6 +1,6 @@
 import { LuChevronDown, LuEye, LuEyeOff, LuWallet } from "react-icons/lu";
 import { useEffect, useState } from "react";
-import { account, accounts, type AccountData } from "../types/account";
+import { account, accounts, } from "../types/account";
 
 const Accounts = () => {
   const [showBalance, setShowBalance] = useState(true);
