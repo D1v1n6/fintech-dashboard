@@ -1,11 +1,51 @@
 import { LuChevronDown, LuEye, LuEyeOff, LuWallet } from "react-icons/lu";
-import { useState } from "react";
-import { account, accounts } from "../types/account";
+import { useEffect, useState } from "react";
+import { account, accounts, type AccountData } from "../types/account";
 
 const Accounts = () => {
   const [showBalance, setShowBalance] = useState(true);
+  const [accountData, setAccountData] = useState<AccountData[]>([]);
   const [selectedAccountId, setSelectedAccountId] = useState(accounts[0].id);
   const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
+
+  useEffect(() => {
+    // Fetch account data from the API
+    const fetchAccounts = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) {
+          console.error("No token found. User might not be authenticated.");
+          return;
+        }
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/accounts/list`,
+          {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+
+        if (!response.ok) {
+          console.error("Failed to fetch accounts:", response.status);
+          return;
+        }
+
+        const data = await response.json();
+        if (!(Array.isArray(data.accounts))) {
+          console.error("Invalid accounts response");
+          return;
+        }
+        setAccountData(data.accounts);
+      } catch (error) {
+        console.error("Error fetching accounts:", error);
+      }
+    };
+
+    fetchAccounts();
+  }, []);
 
   const selectedAccount =
     accounts.find((item) => item.id === selectedAccountId) ?? accounts[0];
