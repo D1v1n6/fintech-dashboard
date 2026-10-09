@@ -1,16 +1,19 @@
 import { LuChevronDown, LuEye, LuEyeOff, LuWallet } from "react-icons/lu";
 import { useEffect, useState } from "react";
-import { account, accounts, } from "../types/account";
+import {type AccountData } from "../types/account";
 
 const Accounts = () => {
   const [showBalance, setShowBalance] = useState(true);
-  //const [accountData, setAccountData] = useState<AccountData[]>([]);
-  const [selectedAccountId, setSelectedAccountId] = useState(accounts[0].id);
+  const [accountData, setAccountData] = useState<AccountData[]>([]);
+  const [selectedAccountId, setSelectedAccountId] = useState<string | null>(
+    null,
+  );
   const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     // Fetch account data from the API
-    /*const fetchAccounts = async () => {
+    const fetchAccounts = async () => {
       try {
         const token = localStorage.getItem("token");
         if (!token) {
@@ -34,7 +37,7 @@ const Accounts = () => {
         }
 
         const data = await response.json();
-        if (!(Array.isArray(data.accounts))) {
+        if (!Array.isArray(data.accounts)) {
           console.error("Invalid accounts response");
           return;
         }
@@ -42,13 +45,48 @@ const Accounts = () => {
       } catch (error) {
         console.error("Error fetching accounts:", error);
       }
+      finally {
+        setIsLoading(false);
+      }
     };
 
-    fetchAccounts();*/
+    fetchAccounts();
   }, []);
 
   const selectedAccount =
-    accounts.find((item) => item.id === selectedAccountId) ?? accounts[0];
+    accountData.find((item) => item._id === selectedAccountId) ??
+    accountData[0];
+
+  if (isLoading) {
+  return (
+    <div className="p-6">
+      <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
+        Accounts
+      </h1>
+      <p className="mt-2 text-slate-500 dark:text-slate-400">
+        Loading accounts...
+      </p>
+    </div>
+  );
+}
+
+if (!selectedAccount) {
+  return (
+    <div className="p-6">
+      <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
+        Accounts
+      </h1>
+      <p className="mt-2 text-slate-500 dark:text-slate-400">
+        No accounts found. Create an account to get started.
+      </p>
+    </div>
+  );
+}
+
+  const totalBalance = accountData.reduce(
+    (total, item) => total + item.balance,
+    0,
+  );
 
   return (
     <div className="space-y-6">
@@ -71,7 +109,7 @@ const Accounts = () => {
             <div className="mt-2 flex items-center gap-3">
               <h2 className="text-3xl font-bold text-white">
                 {showBalance
-                  ? `₦${account.balance.toLocaleString()}`
+                  ? `₦${totalBalance.toLocaleString()}`
                   : "₦ ••••••••"}
               </h2>
 
@@ -95,16 +133,16 @@ const Accounts = () => {
           <div>
             <p className="text-xs text-slate-400">Total Income</p>
 
-            <p className="mt-1 font-semibold text-green-400">
-              ₦{account.income.toLocaleString()}
+            <p className="mt-1 font-semibold text-green-400 text-sm md:text-base">
+              No transaction yet
             </p>
           </div>
 
           <div>
             <p className="text-xs text-slate-400">Total Expenses</p>
 
-            <p className="mt-1 font-semibold text-red-400">
-              ₦{account.expenses.toLocaleString()}
+            <p className="mt-1 font-semibold text-red-400 text-sm md:text-base">
+              No transaction yet
             </p>
           </div>
         </div>
@@ -149,16 +187,16 @@ const Accounts = () => {
           {/* Account Options */}
           {isAccountMenuOpen && (
             <div className="absolute left-0 right-0 z-10 mt-2 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-800">
-              {accounts.map((item) => (
+              {accountData.map((item) => (
                 <button
-                  key={item.id}
+                  key={item._id}
                   type="button"
                   onClick={() => {
-                    setSelectedAccountId(item.id);
+                    setSelectedAccountId(item._id);
                     setIsAccountMenuOpen(false);
                   }}
                   className={`flex w-full items-center gap-3 p-4 text-left transition hover:bg-slate-50 dark:hover:bg-slate-700/50 ${
-                    item.id === selectedAccountId
+                    item._id === selectedAccountId
                       ? "bg-slate-50 dark:bg-slate-700/50"
                       : ""
                   }`}
@@ -184,6 +222,14 @@ const Accounts = () => {
 
         {/* Selected Account Details */}
         <div className="mt-4 rounded-2xl border border-slate-200 bg-white p-6 shadow-lg dark:border-slate-700 dark:bg-slate-800">
+          <div className="mb-4">
+            <p className="text-sm text-slate-500 dark:text-slate-400">
+              Account Holder
+            </p>
+            <p className="text-xl font-semibold text-slate-900 dark:text-white">
+              {selectedAccount.user.name}
+            </p>
+          </div>
           <div className="flex items-start justify-between gap-4">
             <div>
               <p className="text-sm text-slate-500 dark:text-slate-400">
@@ -207,7 +253,7 @@ const Accounts = () => {
               <p className="text-xs text-slate-500 dark:text-slate-400">Bank</p>
 
               <p className="mt-1 text-sm font-medium text-slate-900 dark:text-white">
-                {selectedAccount.bank}
+                {selectedAccount.bankName}
               </p>
             </div>
 
