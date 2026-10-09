@@ -4,13 +4,13 @@ import { account, accounts, type AccountData } from "../types/account";
 
 const Accounts = () => {
   const [showBalance, setShowBalance] = useState(true);
-  const [accountData, setAccountData] = useState<AccountData[]>([]);
+  //const [accountData, setAccountData] = useState<AccountData[]>([]);
   const [selectedAccountId, setSelectedAccountId] = useState(accounts[0].id);
   const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
 
   useEffect(() => {
     // Fetch account data from the API
-    const fetchAccounts = async () => {
+    /*const fetchAccounts = async () => {
       try {
         const token = localStorage.getItem("token");
         if (!token) {
@@ -44,7 +44,7 @@ const Accounts = () => {
       }
     };
 
-    fetchAccounts();
+    fetchAccounts();*/
   }, []);
 
   const selectedAccount =
