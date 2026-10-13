@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { FormEvent } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { LuArrowRight, LuLock, LuMail } from "react-icons/lu";
+import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -9,6 +10,7 @@ const Login = () => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const { login } = useAuth();
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -39,6 +41,7 @@ const Login = () => {
       const data = await response.json();
 
       localStorage.setItem("token", data.token);
+      login(data.user);
       navigate("/");
     } catch (error) {
       console.error("Login error:", error);

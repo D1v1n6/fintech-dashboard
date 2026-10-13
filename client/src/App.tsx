@@ -10,16 +10,9 @@ import Settings from "./pages/Settings";
 import Payments from "./pages/Payments";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
+import ProtectedRoute from "./components/ProtectedRoute";
 
-function ProtectedRoute() {
-  const token = localStorage.getItem("token");
 
-  if (!token) {
-    return <Navigate to="/login" replace />;
-  }
-
-  return <Outlet />;
-}
 
 function Layout() {
   return (

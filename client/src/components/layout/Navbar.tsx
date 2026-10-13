@@ -3,9 +3,10 @@ import MobileNav from "./MobileNav";
 import { MdOutlineDarkMode, MdOutlineLightMode } from "react-icons/md";
 import { RiNotificationLine } from "react-icons/ri";
 import { FiUser } from "react-icons/fi";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { useTheme } from "../../context/ThemeContext";
 import { notifications } from "../../types/notification";
+import { useAuth } from "../../context/AuthContext";
 
 const pageInfo: Record<
   string,
@@ -62,16 +63,11 @@ const notificationIcons = {
 const Navbar = () => {
   const location = useLocation();
 
-  const navigate = useNavigate();
+  const { logout } = useAuth();
 
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const profileRef = useRef<HTMLDivElement>(null);
-
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    navigate("/login");
-  };
 
   const currentPage = pageInfo[location.pathname] || {
     title: "Dashboard",
@@ -82,57 +78,57 @@ const Navbar = () => {
 
   const [isMobileNavOpen, setIsMobileNavOpen] = useState(false);
   const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
-  const [userData, setUserData] = useState<{ name: string; email: string } | null>(null);
+  const [userData, setUserData] = useState<{
+    name: string;
+    email: string;
+  } | null>(null);
   const notificationRef = useRef<HTMLDivElement>(null);
- useEffect(() => {
-  const handleClickOutside = (event: MouseEvent) => {
-    const target = event.target as Node;
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node;
 
-    if (
-      notificationRef.current &&
-      !notificationRef.current.contains(target)
-    ) {
-      setIsNotificationsOpen(false);
-    }
+      if (
+        notificationRef.current &&
+        !notificationRef.current.contains(target)
+      ) {
+        setIsNotificationsOpen(false);
+      }
 
-    if (
-      profileRef.current &&
-      !profileRef.current.contains(target)
-    ) {
-      setIsProfileOpen(false);
-    }
-  };
+      if (profileRef.current && !profileRef.current.contains(target)) {
+        setIsProfileOpen(false);
+      }
+    };
 
-  document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
 
-  return () => {
-    document.removeEventListener("mousedown", handleClickOutside);
-  };
-}, []);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
-useEffect(() => {
-  const getUserData = async () => {
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/auth/me`,
-        {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+  useEffect(() => {
+    const getUserData = async () => {
+      try {
+        const response = await fetch(
+          `${import.meta.env.VITE_API_URL}/api/auth/me`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
           },
-        }
-      );
+        );
 
-      const data = await response.json();
-      console.log("Fetched user data:", data);
-      setUserData(data.user);
-    } catch (error) {
-      console.error("Error fetching current user:", error);
-    }
-  };
+        const data = await response.json();
+        console.log("Fetched user data:", data);
+        setUserData(data.user);
+      } catch (error) {
+        console.error("Error fetching current user:", error);
+      }
+    };
 
-  getUserData();
-}, []);
+    getUserData();
+  }, []);
   return (
     <div className="sticky top-0 z-10 flex items-center justify-between bg-slate-100 dark:bg-[#0F172A] px-3 py-5 md:px-6">
       {/* Mobile Menu */}
@@ -255,17 +251,17 @@ border border-slate-200 bg-white shadow-2xl dark:border-slate-700 dark:bg-[#1E29
 
           {isProfileOpen && (
             <div className="absolute right-0 top-14 z-50 w-64 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-800">
-                <div className="p-4">
-                  <p className="text-lg font-bold text-slate-900 dark:text-white">
-                    {userData?.name}
-                  </p>
-                  <p className="text-sm text-slate-500 dark:text-slate-400">
-                    {userData?.email}
-                  </p>
-                </div>
+              <div className="p-4">
+                <p className="text-lg font-bold text-slate-900 dark:text-white">
+                  {userData?.name}
+                </p>
+                <p className="text-sm text-slate-500 dark:text-slate-400">
+                  {userData?.email}
+                </p>
+              </div>
               <hr className="border-slate-200 dark:border-slate-700" />
               <button
-                onClick={handleLogout}
+                onClick={logout}
                 className="w-full px-4 py-3 text-left text-sm text-slate-700 transition hover:bg-slate-100 dark:text-white dark:hover:bg-slate-700"
               >
                 Logout
