@@ -1,6 +1,7 @@
 import { LuChevronDown, LuEye, LuEyeOff, LuWallet } from "react-icons/lu";
 import { useEffect, useState } from "react";
-import {type AccountData } from "../types/account";
+import { type AccountData } from "../types/account";
+import CreateAccountModal from "../components/accounts/CreateAccountModal";
 
 const Accounts = () => {
   const [showBalance, setShowBalance] = useState(true);
@@ -10,45 +11,46 @@ const Accounts = () => {
   );
   const [isAccountMenuOpen, setIsAccountMenuOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [isCreateAccountOpen, setIsCreateAccountOpen] = useState(false);
+
+  const fetchAccounts = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.error("No token found. User might not be authenticated.");
+        return;
+      }
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/accounts/list`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      if (!response.ok) {
+        console.error("Failed to fetch accounts:", response.status);
+        return;
+      }
+
+      const data = await response.json();
+      if (!Array.isArray(data.accounts)) {
+        console.error("Invalid accounts response");
+        return;
+      }
+      setAccountData(data.accounts);
+    } catch (error) {
+      console.error("Error fetching accounts:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
     // Fetch account data from the API
-    const fetchAccounts = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          console.error("No token found. User might not be authenticated.");
-          return;
-        }
-        const response = await fetch(
-          `${import.meta.env.VITE_API_URL}/api/accounts/list`,
-          {
-            method: "GET",
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
-            },
-          },
-        );
-
-        if (!response.ok) {
-          console.error("Failed to fetch accounts:", response.status);
-          return;
-        }
-
-        const data = await response.json();
-        if (!Array.isArray(data.accounts)) {
-          console.error("Invalid accounts response");
-          return;
-        }
-        setAccountData(data.accounts);
-      } catch (error) {
-        console.error("Error fetching accounts:", error);
-      }
-      finally {
-        setIsLoading(false);
-      }
-    };
 
     fetchAccounts();
   }, []);
@@ -58,30 +60,46 @@ const Accounts = () => {
     accountData[0];
 
   if (isLoading) {
-  return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
-        Accounts
-      </h1>
-      <p className="mt-2 text-slate-500 dark:text-slate-400">
-        Loading accounts...
-      </p>
-    </div>
-  );
-}
+    return (
+      <div className="p-6">
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
+          Accounts
+        </h1>
+        <p className="mt-2 text-slate-500 dark:text-slate-400">
+          Loading accounts...
+        </p>
+      </div>
+    );
+  }
 
-if (!selectedAccount) {
-  return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
-        Accounts
-      </h1>
-      <p className="mt-2 text-slate-500 dark:text-slate-400">
-        No accounts found. Create an account to get started.
-      </p>
-    </div>
-  );
-}
+  if (!selectedAccount || accountData.length === 0) {
+    return (
+      <div className="p-6">
+        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
+          Accounts
+        </h1>
+        <p className="mt-2 text-slate-500 dark:text-slate-400">
+          No accounts found. Create an account to get started.
+        </p>
+        <button
+          type="button"
+          onClick={() => setIsCreateAccountOpen(true)}
+          className="mt-5 cursor-pointer rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700"
+        >
+          + Add Account
+        </button>
+        {isCreateAccountOpen && (
+          <CreateAccountModal
+            onClose={() => setIsCreateAccountOpen(false)}
+            onSuccess={() => {
+              setIsCreateAccountOpen(false);
+              fetchAccounts();
+            }}
+          />
+        )}
+      </div>
+    );
+  }
 
   const totalBalance = accountData.reduce(
     (total, item) => total + item.balance,
@@ -90,14 +108,23 @@ if (!selectedAccount) {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
-          Accounts
-        </h1>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-slate-900 dark:text-white">
+            Accounts
+          </h1>
 
-        <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
-          Manage and view your accounts
-        </p>
+          <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
+            Manage and view your accounts
+          </p>
+        </div>
+        <button
+          type="button"
+          onClick={() => setIsCreateAccountOpen(true)}
+          className="cursor-pointer rounded-xl bg-blue-600 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-blue-700"
+        >
+          + Add Account
+        </button>
       </div>
 
       {/* Total Balance */}
@@ -289,6 +316,15 @@ if (!selectedAccount) {
           </div>
         </div>
       </div>
+      {isCreateAccountOpen && (
+        <CreateAccountModal
+          onClose={() => setIsCreateAccountOpen(false)}
+          onSuccess={() => {
+            setIsCreateAccountOpen(false);
+            fetchAccounts();
+          }}
+        />
+      )}
     </div>
   );
 };
