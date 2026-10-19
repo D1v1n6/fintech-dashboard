@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Transactable from "../components/transactions/Transactable";
 import Balance from "../components/cards/Balance";
 import {
@@ -7,7 +7,7 @@ import {
 } from "react-icons/hi2";
 
 import { FiClock, FiCreditCard } from "react-icons/fi";
-import { transactions } from "../components/transactions/transactions";
+import type { TransactionData } from "../types/transaction";
 
 const transactionsCard = [
   {
@@ -41,14 +41,57 @@ const Transactions = () => {
   const [transactionType, setTransactionType] = useState("All");
   const [statusFilter, setStatusFilter] = useState("All");
   const [dateFilter, setDateFilter] = useState("This Month");
+  const [transactionData, setTransactionData] = useState<TransactionData[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   const today = new Date();
 
-  const filteredTransactions = transactions.filter((transaction) => {
+  const fetchTransactions = async () => {
+    setIsLoading(true);
+    try {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        console.error("No token found. User might not be authenticated.");
+        return;
+      }
+
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/transactions`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch transactions.");
+      }
+
+      const data = await response.json();
+      setTransactionData(data.data);
+    } catch (error) {
+      console.error("Error fetching transactions:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchTransactions();
+  }, []);
+
+  const filteredTransactions = transactionData.filter((transaction) => {
     const matchesSearch =
-      transaction.recipient.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      transaction.bank.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      transaction.category.toLowerCase().includes(searchTerm.toLowerCase());
+      transaction.account.name
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      transaction.account.bankName
+        .toLowerCase()
+        .includes(searchTerm.toLowerCase()) ||
+      transaction.category?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      transaction.description?.toLowerCase().includes(searchTerm.toLowerCase());
 
     const matchesType =
       transactionType === "All" || transaction.type === transactionType;
@@ -57,7 +100,7 @@ const Transactions = () => {
       statusFilter === "All" || transaction.status === statusFilter;
 
     const matchesDate = (() => {
-      const transactionDate = new Date(transaction.transactionDate);
+      const transactionDate = new Date(transaction.date);
 
       if (dateFilter === "This Month") {
         return (
@@ -100,15 +143,13 @@ const Transactions = () => {
     ];
 
     const rows = filteredTransactions.map((transaction) => [
-      transaction.recipient,
-      transaction.bank,
+      transaction.account.name,
+      transaction.account.bankName,
       transaction.category,
-      transaction.transactionDate,
-      transaction.time,
+      transaction.date,
       transaction.status,
       transaction.amount,
       transaction.type,
-      transaction.reference,
     ]);
 
     const csvContent = [
@@ -162,8 +203,8 @@ const Transactions = () => {
           className="col-span-4 cursor-pointer rounded-lg border border-slate-200 bg-white px-4 py-3 text-slate-900 outline-none dark:border-slate-700 dark:bg-[#1E293B] dark:text-white shadow-lg"
         >
           <option value="All">All</option>
-          <option value="income">Income</option>
-          <option value="expense">Expenses</option>
+          <option value="Income">Income</option>
+          <option value="Expense">Expenses</option>
         </select>
 
         <select

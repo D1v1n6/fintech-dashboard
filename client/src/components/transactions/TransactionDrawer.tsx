@@ -1,8 +1,8 @@
 import { IoClose } from "react-icons/io5";
-import type { Transaction } from "./transactions";
+import type { TransactionData } from "../../types/transaction";
 
 interface TransactionDrawerProps {
-  transaction: Transaction | null;
+  transaction: TransactionData | null;
   onClose: () => void;
 }
 
@@ -44,10 +44,10 @@ const TransactionDrawer = ({
 
           <h3
             className={`text-right text-lg font-semibold ${
-              transaction.type === "income" ? "text-green-400" : "text-red-400"
+              transaction.type === "Income" ? "text-green-400" : "text-red-400"
             }`}
           >
-            {transaction.type === "income"
+            {transaction.type === "Income"
               ? `+₦${Math.abs(transaction.amount).toLocaleString()}`
               : `-₦${Math.abs(transaction.amount).toLocaleString()}`}
           </h3>
@@ -55,18 +55,16 @@ const TransactionDrawer = ({
 
         {/* Details */}
         <div className="space-y-6">
-          <DetailItem label="Recipient" value={transaction.recipient} />
+          <DetailItem label="Account" value={transaction.account.name} />
 
-          <DetailItem label="Bank" value={transaction.bank} />
+          <DetailItem label="Bank" value={transaction.account.bankName} />
 
-          <DetailItem label="Category" value={transaction.category} />
+          <DetailItem label="Category" value={transaction.category || "N/A"} />
 
           <DetailItem
             label="Date"
-            value={`${transaction.date}, ${transaction.time}`}
+            value={`${transaction.date}`}
           />
-
-          <DetailItem label="Reference" value={transaction.reference} />
 
           <div className="border-t border-slate-200 pt-6 dark:border-slate-700">
             <p className="mb-2 text-sm text-slate-500 dark:text-slate-400">

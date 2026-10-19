@@ -1,15 +1,15 @@
 import { useState } from "react";
-import { type Transaction } from "./transactions";
+import type { TransactionData } from "../../types/transaction";
 import TransactionDrawer from "./TransactionDrawer";
 
-interface TransactionItemProps extends Transaction {
+interface TransactionItemProps extends TransactionData {
   onClick: () => void;
 }
 
 const TableHeader = () => (
   <thead className="border-b border-slate-200 dark:border-slate-700">
     <tr className="text-left text-sm text-slate-500 dark:text-slate-400">
-      <th className="py-4">Recipient</th>
+      <th className="py-4">Account</th>
       <th className="py-4">Category</th>
       <th className="py-4">Date</th>
       <th className="py-4">Status</th>
@@ -19,14 +19,13 @@ const TableHeader = () => (
 );
 
 const TableRow = ({
-  recipient,
-  bank,
-  category,
-  date,
-  status,
-  type,
-  amount,
-  onClick,
+account,
+category,
+type,
+amount,
+date,
+status,
+onClick,
 }: TransactionItemProps) => (
   <tr
     onClick={onClick}
@@ -35,15 +34,15 @@ const TableRow = ({
     <td className="py-4">
       <div className="flex items-center gap-2">
         <div className="flex h-5 w-5 items-center justify-center rounded-full bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-white md:h-10 md:w-10">
-          {recipient.charAt(0)}
+          {account.name.charAt(0)}
         </div>
 
         <div>
           <p className="text-xs font-medium text-slate-900 dark:text-white">
-            {recipient}
+            {account.name}
           </p>
 
-          <p className="text-xs text-slate-500 dark:text-slate-400">{bank}</p>
+          <p className="text-xs text-slate-500 dark:text-slate-400">{account.bankName}</p>
         </div>
       </div>
     </td>
@@ -68,10 +67,10 @@ const TableRow = ({
 
     <td
       className={`text-right text-lg font-semibold ${
-        type === "income" ? "text-green-400" : "text-red-400"
+        type === "Income" ? "text-green-400" : "text-red-400"
       }`}
     >
-      {type === "income"
+      {type === "Income"
         ? `+₦${Math.abs(amount).toLocaleString()}`
         : `-₦${Math.abs(amount).toLocaleString()}`}
     </td>
@@ -79,12 +78,12 @@ const TableRow = ({
 );
 
 interface TransactableProps {
-  transactions: Transaction[];
+  transactions: TransactionData[];
 }
 
 const Transactable = ({ transactions }: TransactableProps) => {
   const [selectedTransaction, setSelectedTransaction] =
-    useState<Transaction | null>(null);
+    useState<TransactionData | null>(null);
 
   return (
     <>
@@ -97,7 +96,7 @@ const Transactable = ({ transactions }: TransactableProps) => {
             {transactions.length > 0 ? (
               transactions.map((transaction) => (
                 <TableRow
-                  key={transaction.id}
+                  key={transaction._id}
                   {...transaction}
                   onClick={() => setSelectedTransaction(transaction)}
                 />
@@ -118,7 +117,7 @@ const Transactable = ({ transactions }: TransactableProps) => {
         {transactions.length > 0 ? (
           transactions.map((transaction) => (
             <div
-              key={transaction.id}
+              key={transaction._id}
               onClick={() => setSelectedTransaction(transaction)}
               className="cursor-pointer rounded-xl border border-slate-200 bg-slate-50 p-4 transition hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700"
             >
@@ -126,26 +125,26 @@ const Transactable = ({ transactions }: TransactableProps) => {
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-200 font-medium text-slate-700 dark:bg-slate-700 dark:text-white">
-                    {transaction.recipient.charAt(0)}
+                    {transaction.account.name.charAt(0)}
                   </div>
 
                   <div>
                     <p className="font-medium text-slate-900 dark:text-white">
-                      {transaction.recipient}
+                      {transaction.account.name}
                     </p>
 
-                    <p className="text-xs text-slate-500 dark:text-slate-400">{transaction.bank}</p>
+                    <p className="text-xs text-slate-500 dark:text-slate-400">{transaction.account.bankName}</p>
                   </div>
                 </div>
 
                 <p
                   className={`text-right text-lg font-semibold ${
-                    transaction.type === "income"
+                    transaction.type === "Income"
                       ? "text-green-400"
                       : "text-red-400"
                   }`}
                 >
-                  {transaction.type === "income"
+                  {transaction.type === "Income"
                     ? `+₦${Math.abs(transaction.amount).toLocaleString()}`
                     : `-₦${Math.abs(transaction.amount).toLocaleString()}`}
                 </p>
@@ -159,7 +158,7 @@ const Transactable = ({ transactions }: TransactableProps) => {
                   </p>
 
                   <p className="text-xs text-slate-500 dark:text-slate-400">
-                    {transaction.date} • {transaction.time}
+                    {transaction.date} •
                   </p>
                 </div>
 
