@@ -9,33 +9,6 @@ import {
 import { FiClock, FiCreditCard } from "react-icons/fi";
 import type { TransactionData } from "../types/transaction";
 
-const transactionsCard = [
-  {
-    title: "Total Transactions",
-    balance: 245,
-    icon: <FiCreditCard />,
-    isCurrency: false,
-  },
-  {
-    title: "Money In",
-    balance: 1250000,
-    icon: <HiOutlineArrowTrendingUp />,
-    isCurrency: true,
-  },
-  {
-    title: "Money Out",
-    balance: 850000,
-    icon: <HiOutlineArrowTrendingDown />,
-    isCurrency: true,
-  },
-  {
-    title: "Pending",
-    balance: 8,
-    icon: <FiClock />,
-    isCurrency: false,
-  },
-];
-
 const Transactions = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [transactionType, setTransactionType] = useState("All");
@@ -128,6 +101,47 @@ const Transactions = () => {
 
     return matchesSearch && matchesType && matchesStatus && matchesDate;
   });
+
+  const totalTransactions = filteredTransactions.length;
+
+  const moneyIn = filteredTransactions
+    .filter((transaction) => transaction.type === "Income")
+    .reduce((sum, transaction) => sum + transaction.amount, 0);
+
+  const moneyOut = filteredTransactions
+    .filter((transaction) => transaction.type === "Expense")
+    .reduce((sum, transaction) => sum + transaction.amount, 0);
+
+  const pendingTransactions = filteredTransactions.filter(
+    (transaction) => transaction.status === "Pending",
+  ).length;
+
+  const transactionsCard = [
+  {
+    title: "Total Transactions",
+    balance: totalTransactions,
+    icon: <FiCreditCard />,
+    isCurrency: false,
+  },
+  {
+    title: "Money In",
+    balance: moneyIn,
+    icon: <HiOutlineArrowTrendingUp />,
+    isCurrency: true,
+  },
+  {
+    title: "Money Out",
+    balance: moneyOut,
+    icon: <HiOutlineArrowTrendingDown />,
+    isCurrency: true,
+  },
+  {
+    title: "Pending",
+    balance: pendingTransactions,
+    icon: <FiClock />,
+    isCurrency: false,
+  },
+];
 
   const handleExport = () => {
     const headers = [

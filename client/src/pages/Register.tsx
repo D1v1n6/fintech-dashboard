@@ -182,7 +182,7 @@ const Register = () => {
               {/* Submit */}
               <button
                 type="submit"
-                className="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-blue-700"
+                className="cursor-pointer flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-blue-700"
               >
                 Create account
                 <LuArrowRight size={17} />
@@ -190,7 +190,7 @@ const Register = () => {
             </form>
 
             {/* Login link */}
-            <p className="mt-6 text-center text-sm text-slate-500 dark:text-slate-400">
+            <p className="cursor-pointer mt-6 text-center text-sm text-slate-500 dark:text-slate-400">
               Already have an account?{" "}
               <Link
                 to="/login"

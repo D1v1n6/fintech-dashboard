@@ -115,7 +115,7 @@ const Login = () => {
 
                   <button
                     type="button"
-                    className="text-xs font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400"
+                    className="cursor-pointer text-xs font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400"
                   >
                     Forgot password?
                   </button>
@@ -142,7 +142,7 @@ const Login = () => {
               <button
                 type="submit"
                 disabled={isLoading}
-                className="flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
+                className="cursor-pointer flex w-full items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-blue-700 disabled:cursor-not-allowed disabled:opacity-70"
               >
                 {isLoading ? (
                   "Logging in..."

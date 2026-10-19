@@ -15,6 +15,7 @@ const Balance = ({
   percent,
   isCurrency,
 }: CardItemProps) => {
+  const iconColor = title === "Money In" ? "text-green-700" : title === "Money Out" ? "text-red-500" : title === "Total Transactions" ? "text-blue-700" : title === "Pending" ? "text-yellow-500" : "text-green-700";
   return (
     <div
       className=" dark:bg-[#1E293B]
@@ -31,7 +32,7 @@ const Balance = ({
     >
       <div className="flex justify-between items-center mb-2">
         <p className="text-zinc-600 dark:text-zinc-400 font-bold">{title}</p>
-        <p className="text-green-700">{icon}</p>
+        <p className={iconColor}>{icon}</p>
       </div>
       <h1 className="md:text-3xl text-lg font-bold text-slate-900 dark:text-white">
         {title === "Savings Rate"
