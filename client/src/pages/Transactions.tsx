@@ -20,7 +20,7 @@ const Transactions = () => {
   const today = new Date();
 
   const fetchTransactions = async () => {
-    setIsLoading(true);
+    isLoading;
     try {
       const token = localStorage.getItem("token");
 
