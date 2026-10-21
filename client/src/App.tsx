@@ -17,7 +17,7 @@ import ProtectedRoute from "./components/ProtectedRoute";
 function Layout() {
   return (
     <div className="w-full h-screen flex flex-col md:flex-row">
-      <div className="w-1/5 h-screen bg-slate-50 dark:bg-[#030c1b] sticky top-0 hidden md:block">
+      <div className="w-1/5 h-screen bg-slate-50 dark:bg-[#030c1b] sticky top-0 hidden lg:block ">
         <Sidebar />
       </div>
       {/* <MobileSidebar /> */}

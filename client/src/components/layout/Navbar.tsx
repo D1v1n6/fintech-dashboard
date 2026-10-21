@@ -136,13 +136,13 @@ const Navbar = () => {
         onClick={() => setIsMobileNavOpen(true)}
         className="block cursor-pointer rounded-xl border border-slate-200 bg-white hover:bg-slate-100 dark:border-slate-700
         dark:bg-slate-800 px-2 py-1 text-2xl dark:text-zinc-400 transition
-        dark:hover:bg-slate-700 md:hidden"
+        dark:hover:bg-slate-700 lg:hidden"
       >
         ☰
       </button>
 
       {/* Page Title */}
-      <div className="hidden md:block">
+      <div className="hidden lg:block">
         <h2 className="text-xl font-semibold  text-slate-900 dark:text-white">
           {currentPage.title}
         </h2>

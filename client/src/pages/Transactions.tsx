@@ -20,7 +20,6 @@ const Transactions = () => {
   const today = new Date();
 
   const fetchTransactions = async () => {
-    isLoading;
     try {
       const token = localStorage.getItem("token");
 
@@ -117,53 +116,53 @@ const Transactions = () => {
   ).length;
 
   const transactionsCard = [
-  {
-    title: "Total Transactions",
-    balance: totalTransactions,
-    icon: <FiCreditCard />,
-    isCurrency: false,
-  },
-  {
-    title: "Money In",
-    balance: moneyIn,
-    icon: <HiOutlineArrowTrendingUp />,
-    isCurrency: true,
-  },
-  {
-    title: "Money Out",
-    balance: moneyOut,
-    icon: <HiOutlineArrowTrendingDown />,
-    isCurrency: true,
-  },
-  {
-    title: "Pending",
-    balance: pendingTransactions,
-    icon: <FiClock />,
-    isCurrency: false,
-  },
-];
+    {
+      title: "Total Transactions",
+      balance: totalTransactions,
+      icon: <FiCreditCard />,
+      isCurrency: false,
+    },
+    {
+      title: "Money In",
+      balance: moneyIn,
+      icon: <HiOutlineArrowTrendingUp />,
+      isCurrency: true,
+    },
+    {
+      title: "Money Out",
+      balance: moneyOut,
+      icon: <HiOutlineArrowTrendingDown />,
+      isCurrency: true,
+    },
+    {
+      title: "Pending",
+      balance: pendingTransactions,
+      icon: <FiClock />,
+      isCurrency: false,
+    },
+  ];
 
   const handleExport = () => {
     const headers = [
-      "Recipient",
+      "Account",
       "Bank",
       "Category",
       "Date",
-      "Time",
       "Status",
       "Amount",
       "Type",
-      "Reference",
+      "Description",
     ];
 
     const rows = filteredTransactions.map((transaction) => [
       transaction.account.name,
       transaction.account.bankName,
       transaction.category,
-      transaction.date,
+      new Date(transaction.date).toLocaleDateString(),
       transaction.status,
       transaction.amount,
       transaction.type,
+      transaction.description,
     ]);
 
     const csvContent = [
@@ -256,9 +255,15 @@ const Transactions = () => {
       </div>
 
       {/* Transactions Table goes here */}
-      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white p-3 shadow-lg dark:border-slate-700 dark:bg-slate-800">
-        <Transactable transactions={filteredTransactions} />
-      </div>
+      {isLoading ? (
+        <div className="py-10 text-center text-slate-500 dark:text-slate-400">
+          Loading transactions...
+        </div>
+      ) : (
+        <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white p-3 shadow-lg dark:border-slate-700 dark:bg-slate-800">
+          <Transactable transactions={filteredTransactions} />
+        </div>
+      )}
     </div>
   );
 };
