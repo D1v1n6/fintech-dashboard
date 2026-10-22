@@ -1,11 +1,25 @@
 import { Request, Response } from "express";
 import Account from "../models/Account.js";
 
+const generateAccountNumber = async (): Promise<string> => {
+  while (true) {
+    const accountNumber = Math.floor(
+      1000000000 + Math.random() * 9000000000,
+    ).toString();
+
+    const existingAccount = await Account.findOne({ accountNumber });
+
+    if (!existingAccount) {
+      return accountNumber;
+    }
+  }
+};
+
 export const createAccount = async (req: Request, res: Response) => {
   try {
-    const { name, accountNumber, bankName, type } = req.body;
+    const { name, bankName, type } = req.body;
 
-    if (!name || !accountNumber || !bankName || !type) {
+    if (!name || !bankName || !type) {
       return res.status(400).json({
         success: false,
         message: "Please provide all required fields.",
@@ -20,14 +34,7 @@ export const createAccount = async (req: Request, res: Response) => {
       });
     }
 
-    const existingAccount = await Account.findOne({ accountNumber });
-
-    if (existingAccount) {
-      return res.status(409).json({
-        success: false,
-        message: "Account with this number already exists.",
-      });
-    }
+    const accountNumber = await generateAccountNumber();
 
     const account = await Account.create({
       user: req.userId,
@@ -44,7 +51,20 @@ export const createAccount = async (req: Request, res: Response) => {
     });
   } catch (error) {
     console.error("Error creating account:", error);
-    res.status(500).json({
+
+    if (
+      typeof error === "object" &&
+      error !== null &&
+      "code" in error &&
+      error.code === 11000
+    ) {
+      return res.status(409).json({
+        success: false,
+        message: "Account number already exists. Please try again.",
+      });
+    }
+
+    return res.status(500).json({
       success: false,
       message: "Error creating account.",
     });
