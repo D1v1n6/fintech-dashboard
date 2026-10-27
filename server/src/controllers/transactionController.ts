@@ -4,8 +4,14 @@ import Account from "../models/Account.js";
 
 export const createTransaction = async (req: Request, res: Response) => {
   try {
-    const { account, type, category, amount, description, date } = req.body;
-    if (!account || !type || !amount || amount <= 0 || !date) {
+    const { account, type, category, amount, description } = req.body;
+    if (
+      !account ||
+      !type ||
+      typeof amount !== "number" ||
+      !amount ||
+      amount <= 0
+    ) {
       return res.status(400).json({
         success: false,
         message: "Please provide all required fields.",
@@ -30,6 +36,21 @@ export const createTransaction = async (req: Request, res: Response) => {
       });
     }
 
+    if (type === "Expense" && accountExists.balance < amount) {
+      return res.status(400).json({
+        success: false,
+        message: "Insufficient balance.",
+      });
+    }
+
+    if (type === "Income") {
+      accountExists.balance += amount;
+    } else {
+      accountExists.balance -= amount;
+    }
+
+    await accountExists.save();
+
     const transaction = await Transaction.create({
       user: req.userId,
       account,
@@ -37,7 +58,7 @@ export const createTransaction = async (req: Request, res: Response) => {
       category,
       amount,
       description,
-      date,
+      date: new Date(),
     });
 
     res.status(201).json({
@@ -55,15 +76,17 @@ export const createTransaction = async (req: Request, res: Response) => {
 };
 
 export const getTransactions = async (req: Request, res: Response) => {
-  try{
-    const transactions = await Transaction.find({ user: req.userId }).populate("account", "name accountNumber bankName type");
+  try {
+    const transactions = await Transaction.find({ user: req.userId }).populate(
+      "account",
+      "name accountNumber bankName type",
+    );
     res.status(200).json({
       success: true,
       message: "Transactions fetched successfully.",
       data: transactions,
     });
-  }
-  catch (error) {
+  } catch (error) {
     console.error("Error fetching transactions:", error);
     res.status(500).json({
       success: false,

@@ -1,19 +1,12 @@
 import {
+  LuArrowDownLeft,
   LuArrowUpRight,
   LuReceipt,
   LuSmartphone,
-  LuArrowDownLeft,
 } from "react-icons/lu";
-import {
-  account,
-  airtimeNetworks,
-  billCategories,
-  billProviders,
-  depositBankAccount,
-  depositMethods,
-  destinationAccounts,
-} from "../types/account";
-import { useState } from "react";
+import type { AccountData } from "../types/account";
+
+import { useEffect, useState } from "react";
 
 const paymentActions = [
   {
@@ -41,6 +34,15 @@ const paymentActions = [
     icon: <LuArrowDownLeft />,
   },
 ];
+
+const billCategories = ["Electricity", "Internet", "Cable TV", "Water"];
+
+const billProviders: Record<string, string[]> = {
+  Electricity: ["PHED"],
+  Internet: ["MTN", "Airtel", "Glo", "9mobile"],
+  "Cable TV": ["DSTV", "GOtv"],
+  Water: ["Water Board"],
+};
 
 const Payments = () => {
   const [selectedAction, setSelectedAction] = useState<string | null>(null);
@@ -75,6 +77,139 @@ const Payments = () => {
   const [depositStep, setDepositStep] = useState<
     "form" | "confirm" | "success"
   >("form");
+  const [accounts, setAccounts] = useState<AccountData[]>([]);
+  const [selectedAccountId, setSelectedAccountId] = useState("");
+  const fetchAccounts = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      if (!token) return;
+
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/accounts/list`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+
+      if (!response.ok) {
+        console.error("Failed to fetch accounts");
+        return;
+      }
+
+      const data = await response.json();
+
+      if (!Array.isArray(data.accounts)) {
+        console.error("Invalid accounts response");
+        return;
+      }
+
+      setAccounts(data.accounts);
+
+      if (!selectedAccountId && data.accounts.length > 0) {
+        setSelectedAccountId(data.accounts[0]._id);
+      }
+    } catch (error) {
+      console.error("Error fetching accounts:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchAccounts();
+  }, []);
+
+  const depositMethods = [
+    { id: 1, name: "Bank Transfer" },
+    { id: 2, name: "Debit Card" },
+  ];
+
+  const airtimeNetworks = ["MTN", "Airtel", "Glo", "9mobile"];
+
+  const handleTransfer = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      if (!token || !currentAccount || !selectedAccount) {
+        setTransferError("Please select a valid account.");
+        return;
+      }
+
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/transactions`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            account: currentAccount._id,
+            type: "Expense",
+            category: "Transfer",
+            amount: Number(amount),
+            description: `Transfer to ${selectedAccount}`,
+          }),
+        },
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setTransferError(data.message || "Transfer failed.");
+        return;
+      }
+
+      setTransferStep("success");
+    } catch (error) {
+      console.error("Error processing transfer:", error);
+      setTransferError("Something went wrong. Please try again.");
+    }
+  };
+
+  const handleDeposit = async () => {
+    const token = localStorage.getItem("token");
+
+    if (!token || !currentAccount) {
+      setDepositError("Please select a valid account.");
+      return;
+    }
+    try {
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/transactions`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            account: currentAccount._id,
+            type: "Income",
+            category: "Deposit",
+            amount: Number(depositAmount),
+            description: `Deposit via ${depositMethod}`,
+          }),
+        },
+      );
+      const data = await response.json();
+
+      if (!response.ok) {
+        setDepositError(data.message || "Deposit failed.");
+        return;
+      }
+
+      setDepositStep("success");
+      await fetchAccounts();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const currentAccount = accounts.find(
+    (account) => account._id === selectedAccountId,
+  );
 
   return (
     <div className="space-y-8">
@@ -94,7 +229,7 @@ const Payments = () => {
         </h2>
 
         <p className="mt-3 text-3xl md:text-4xl font-bold text-green-600">
-          ₦{account.balance.toLocaleString()}
+          ₦{currentAccount?.balance.toLocaleString() ?? "0"}
         </p>
 
         <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
@@ -164,9 +299,9 @@ const Payments = () => {
                             >
                               <option value="">Select an account</option>
 
-                              {destinationAccounts.map((account) => (
-                                <option key={account.id} value={account.id}>
-                                  {account.name} - {account.bank} (
+                              {accounts.map((account) => (
+                                <option key={account._id} value={account._id}>
+                                  {account.name} - {account.bankName} (
                                   {account.accountNumber})
                                 </option>
                               ))}
@@ -223,7 +358,9 @@ const Payments = () => {
                                 return;
                               }
 
-                              if (transferAmount > account.balance) {
+                              if (
+                                Number(amount) > (currentAccount?.balance ?? 0)
+                              ) {
                                 setTransferError("Insufficient balance.");
                                 return;
                               }
@@ -255,9 +392,9 @@ const Payments = () => {
                               <span className="text-slate-500">Recipient</span>
                               <span className="font-medium text-slate-900 dark:text-white">
                                 {
-                                  destinationAccounts.find(
-                                    (item) =>
-                                      String(item.id) === selectedAccount,
+                                  accounts.find(
+                                    (account) =>
+                                      account._id === selectedAccount,
                                   )?.name
                                 }
                               </span>
@@ -267,10 +404,10 @@ const Payments = () => {
                               <span className="text-slate-500">Bank</span>
                               <span className="font-medium text-slate-900 dark:text-white">
                                 {
-                                  destinationAccounts.find(
-                                    (item) =>
-                                      String(item.id) === selectedAccount,
-                                  )?.bank
+                                  accounts.find(
+                                    (account) =>
+                                      account._id === selectedAccount,
+                                  )?.bankName
                                 }
                               </span>
                             </div>
@@ -294,7 +431,7 @@ const Payments = () => {
 
                             <button
                               type="button"
-                              onClick={() => setTransferStep("success")}
+                              onClick={handleTransfer}
                               className="flex-1 rounded-xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-blue-700"
                             >
                               Confirm
@@ -471,7 +608,9 @@ const Payments = () => {
                                 return;
                               }
 
-                              if (amount > account.balance) {
+                              if (
+                                Number(amount) > (currentAccount?.balance ?? 0)
+                              ) {
                                 setBillError("Insufficient balance.");
                                 return;
                               }
@@ -685,7 +824,9 @@ const Payments = () => {
                                 return;
                               }
 
-                              if (amount > account.balance) {
+                              if (
+                                Number(amount) > (currentAccount?.balance ?? 0)
+                              ) {
                                 setAirtimeError("Insufficient balance.");
                                 return;
                               }
@@ -833,7 +974,7 @@ const Payments = () => {
                                   <span className="text-slate-500">Bank</span>
 
                                   <span className="font-medium text-slate-900 dark:text-white">
-                                    {depositBankAccount.bank}
+                                    {currentAccount?.bankName}
                                   </span>
                                 </div>
 
@@ -843,7 +984,7 @@ const Payments = () => {
                                   </span>
 
                                   <span className="font-medium text-slate-900 dark:text-white">
-                                    {depositBankAccount.accountName}
+                                    {currentAccount?.name}
                                   </span>
                                 </div>
 
@@ -853,7 +994,7 @@ const Payments = () => {
                                   </span>
 
                                   <span className="font-semibold tracking-wide text-slate-900 dark:text-white">
-                                    {depositBankAccount.accountNumber}
+                                    {currentAccount?.accountNumber}
                                   </span>
                                 </div>
                               </div>
@@ -980,7 +1121,7 @@ const Payments = () => {
 
                             <button
                               type="button"
-                              onClick={() => setDepositStep("success")}
+                              onClick={handleDeposit}
                               className="flex-1 rounded-xl bg-blue-600 px-4 py-3 text-sm font-semibold text-white transition hover:bg-blue-700"
                             >
                               Confirm
